@@ -28,7 +28,7 @@
     .quote-box { background: var(--color-card); border-radius: var(--border-radius-xl); padding: 1.5rem; margin-bottom: 1.5rem; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid var(--color-border); }
     .quote-text { font-size: 14px; color: var(--color-text-primary); line-height: 1.6; padding-right: 1.5rem; }
     .quote-author { font-size: 12px; color: var(--color-text-secondary); margin-top: 8px; font-weight: 500; }
-    .quote-refresh { position: absolute; top: 1.25rem; right: 1.25rem; background: none; border: none; cursor: pointer; color: var(--text-secondary); font-size: 16px; }
+    .quote-refresh { position: absolute; top: 1.25rem; right: 1.25rem; background: none; border: none; cursor: pointer; color: var(--color-text-secondary); font-size: 16px; }
     
     /* 탭 메뉴 */
     .mode-tabs { display: flex; background: rgba(0,0,0,0.04); border-radius: var(--border-radius-md); padding: 3px; margin-bottom: 2rem; }
@@ -42,22 +42,18 @@
     .timer-time .t-min { font-size: 46px; font-weight: 300; color: var(--color-text-primary); letter-spacing: -1px; }
     .timer-time .t-label { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin-top: 2px; }
     
-    /* 컨트롤 버튼 */
-    .controls { display: flex; align-items: center; justify-content: center; gap: 24px; margin-bottom: 1rem; }
-    .ctrl-btn { width: 56px; height: 56px; border-radius: 50%; border: none; background: var(--color-card); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 22px; color: var(--color-text-primary); box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.2s; }
-    .ctrl-btn:hover { transform: scale(1.05); }
-    .ctrl-btn:active { transform: scale(0.95); }
-    
-    .ctrl-btn.primary { width: 72px; height: 72px; background: var(--color-text-primary); color: var(--color-card); box-shadow: 0 6px 16px rgba(0,0,0,0.12); }
-    .ctrl-btn.primary:hover { background: #2d2d2f; }
+    /* 컨트롤 버튼 (원 버튼 단독 배치) */
+    .controls { display: flex; align-items: center; justify-content: center; margin-bottom: 1rem; }
+    .ctrl-btn.primary { width: 76px; height: 76px; border-radius: 50%; border: none; background: var(--color-text-primary); color: var(--color-card); cursor: pointer; display: flex; align-items: center; justify-content: center; box-shadow: 0 6px 20px rgba(0,0,0,0.15); transition: all 0.2s; }
+    .ctrl-btn.primary:hover { background: #2d2d2f; transform: scale(1.04); }
+    .ctrl-btn.primary:active { transform: scale(0.96); }
     
     .icon-svg { width: 1em; height: 1em; fill: currentColor; display: block; }
-    .ctrl-btn.primary .icon-svg { font-size: 28px; }
+    .ctrl-btn.primary .icon-svg { font-size: 30px; }
     
     /* 순공 기록 패널 */
     .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.5rem; }
     .stat-card { background: var(--color-card); border-radius: var(--border-radius-md); padding: 18px 8px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid var(--color-border); }
-    /* [수정] 렌더링 시스템이 확실하게 인식할 수 있도록 타겟팅 재정비 */
     .stat-val { font-size: 22px; font-weight: 600; color: var(--color-accent); letter-spacing: -0.5px; white-space: nowrap; }
     .stat-lbl { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; font-weight: 500; }
     
@@ -88,21 +84,18 @@
 <h2 class="sr-only">공부 집중 타이머 — 명언 및 순공시간 기록</h2>
 
 <div class="wrap">
-  <!-- 명언 영역 -->
   <div class="quote-box" id="quoteBox">
     <button class="quote-refresh" id="quoteRefreshBtn" aria-label="명언 새로 보기"><i class="ti ti-refresh"></i></button>
     <p class="quote-text" id="quoteText">지금 이 순간이 당신이 가진 전부입니다. 오늘 할 수 있는 일을 내일로 미루지 마세요.</p>
     <p class="quote-author" id="quoteAuthor">— 마르쿠스 아우렐리우스</p>
   </div>
 
-  <!-- 상단 탭 -->
   <div class="mode-tabs">
     <button class="mode-tab active" data-tab="timer" id="tabTimer">타이머</button>
     <button class="mode-tab" data-tab="stats" id="tabStats">순공시간</button>
     <button class="mode-tab" data-tab="settings" id="tabSettings">설정</button>
   </div>
 
-  <!-- 타이머 패널 -->
   <div id="panelTimer">
     <div class="timer-display">
       <div class="timer-ring-wrap">
@@ -120,10 +113,8 @@
     </div>
     
     <div class="controls">
-      <button class="ctrl-btn" id="btnReset" aria-label="초기화"><i class="ti ti-rotate-clockwise-2"></i></button>
-      
       <button class="ctrl-btn primary" id="btnPlay" aria-label="시작/일시정지">
-        <svg id="iconPlay" class="icon-svg" viewBox="0 0 100 100" style="display: block; margin-left: 3px;">
+        <svg id="iconPlay" class="icon-svg" viewBox="0 0 100 100" style="display: block; margin-left: 4px;">
           <polygon points="25,15 85,50 25,85" />
         </svg>
         <svg id="iconPause" class="icon-svg" viewBox="0 0 100 100" style="display: none;">
@@ -134,11 +125,9 @@
     </div>
   </div>
 
-  <!-- 순공 기록 패널 -->
   <div id="panelStats" style="display:none;">
     <div class="stats-row">
       <div class="stat-card">
-        <!-- [확인] 아이디 매칭 확실히 고정 -->
         <div class="stat-val" id="statTotal">0h 0m 0s</div>
         <div class="stat-lbl">오늘 순공 시간</div>
       </div>
@@ -156,7 +145,6 @@
     </div>
   </div>
 
-  <!-- 설정 패널 -->
   <div id="panelSettings" style="display:none;">
     <div class="settings-box">
       <div class="setting-row">
@@ -243,7 +231,7 @@ function tick() {
     state.secondsLeft--;
     if (state.mode === 'focus') {
       state.totalFocusSec++;
-      updateStats(); // 탭 위치와 무관하게 매초 확실히 DOM 문자열을 갱신합니다.
+      updateStats();
     }
     updateDisplay();
   } else {
@@ -267,29 +255,17 @@ function togglePlay() {
 }
 
 document.getElementById('btnPlay').addEventListener('click', togglePlay);
-document.getElementById('btnReset').addEventListener('click', () => {
-  clearInterval(state.interval); state.running = false;
-  state.secondsLeft = modeTotal();
-  document.getElementById('iconPause').style.display = 'none';
-  document.getElementById('iconPlay').style.display = 'block';
-  updateDisplay();
-});
 
-// [수정] 어떤 순간에도 유실 없이 무조건 실시간 반영 포맷팅 고정
 function updateStats() {
   const h = Math.floor(state.totalFocusSec / 3600);
   const m = Math.floor((state.totalFocusSec % 3600) / 60);
   const s = state.totalFocusSec % 60;
   
   const totalEl = document.getElementById('statTotal');
-  if (totalEl) {
-    totalEl.textContent = h + 'h ' + m + 'm ' + s + 's';
-  }
+  if (totalEl) totalEl.textContent = h + 'h ' + m + 'm ' + s + 's';
   
   const sessEl = document.getElementById('statSessions');
-  if (sessEl) {
-    sessEl.textContent = state.focusDone + '회';
-  }
+  if (sessEl) sessEl.textContent = state.focusDone + '회';
   
   const logListEl = document.getElementById('logList');
   if (logListEl) {
@@ -311,7 +287,6 @@ document.querySelectorAll('.mode-tab').forEach(tab => {
     ['timer','stats','settings'].forEach(p => {
       document.getElementById('panel' + p.charAt(0).toUpperCase() + p.slice(1)).style.display = tab.dataset.tab === p ? '' : 'none';
     });
-    // 탭을 눌러 진입하는 순간에도 딜레이 없이 한 번 더 최신 데이터를 꽂아줍니다.
     updateStats(); 
   });
 });
@@ -328,7 +303,6 @@ document.querySelectorAll('.num-btn').forEach(btn => {
   });
 });
 
-// 초기화 시점 강제 바인딩
 updateDisplay();
 updateStats();
 </script>
