@@ -4,6 +4,7 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Study Focus Timer</title>
+  <!-- 기존 아이콘 라이브러리는 그대로 두되, 메인 버튼은 SVG로 대체합니다. -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
   <style>
     /* Apple SF Pro 스타일 시스템 적용 */
@@ -26,14 +27,14 @@
     
     .wrap { max-width: 420px; margin: 4rem auto; padding: 0 1.5rem; }
     
-    /* 명언 박스 - 가볍고 반투명한 블러 효과 */
+    /* 명언 박스 */
     .quote-box { background: var(--color-card); border-radius: var(--border-radius-xl); padding: 1.5rem; margin-bottom: 1.5rem; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid var(--color-border); }
     .quote-text { font-size: 14px; color: var(--color-text-primary); line-height: 1.6; font-weight: 400; padding-right: 1.5rem; }
     .quote-author { font-size: 12px; color: var(--color-text-secondary); margin-top: 8px; font-weight: 500; }
     .quote-refresh { position: absolute; top: 1.25rem; right: 1.25rem; background: none; border: none; cursor: pointer; color: var(--color-text-secondary); font-size: 16px; transition: color 0.2s; }
     .quote-refresh:hover { color: var(--color-text-primary); }
     
-    /* 탭 메뉴 - 애플 제어센터 스타일 */
+    /* 탭 메뉴 */
     .mode-tabs { display: flex; background: rgba(0,0,0,0.04); border-radius: var(--border-radius-md); padding: 3px; margin-bottom: 2rem; }
     .mode-tab { flex: 1; text-align: center; padding: 10px 0; font-size: 13px; font-weight: 500; border-radius: 9px; cursor: pointer; color: var(--color-text-secondary); border: none; background: transparent; transition: all 0.2s ease-in-out; }
     .mode-tab.active { background: var(--color-card); color: var(--color-text-primary); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
@@ -50,13 +51,19 @@
     .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(0,0,0,0.1); transition: all 0.3s; }
     .dot.done { background: var(--color-text-primary); transform: scale(1.2); }
     
-    /* 컨트롤 버튼 - 에어팟 케이스 같은 유려한 곡선 */
+    /* 컨트롤 버튼 - 메인 버튼 문제 해결 및 아이콘 중앙 정렬 */
     .controls { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 1rem; }
     .ctrl-btn { width: 52px; height: 52px; border-radius: 50%; border: none; background: var(--color-card); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--color-text-primary); box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.2s; }
     .ctrl-btn:hover { transform: scale(1.05); background: #fdfdfd; }
     .ctrl-btn:active { transform: scale(0.95); }
-    .ctrl-btn.primary { width: 68px; height: 68px; font-size: 26px; background: var(--color-text-primary); color: var(--color-card); }
+    
+    /* [수정] 메인 버튼 디자인 업데이트: 내부 아이콘 가독성 확보 */
+    .ctrl-btn.primary { width: 68px; height: 68px; background: var(--color-text-primary); color: var(--color-card); }
     .ctrl-btn.primary:hover { background: #2d2d2f; }
+    
+    /* [추가] SVG 아이콘 전용 스타일: 중앙 정렬 */
+    .icon-svg { width: 1em; height: 1em; fill: currentColor; display: block; }
+    .ctrl-btn.primary .icon-svg { font-size: 26px; } /* 메인 버튼 아이콘 크기 */
     
     /* 순공 시간 & 통계 카드 */
     .stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
@@ -92,18 +99,21 @@
 <h2 class="sr-only">공부 집중 타이머 — 뽀모도로 방식 타이머, 명언, 순공시간 기록</h2>
 
 <div class="wrap">
+  <!-- 명언 영역 -->
   <div class="quote-box" id="quoteBox">
     <button class="quote-refresh" id="quoteRefreshBtn" aria-label="명언 새로 보기"><i class="ti ti-refresh"></i></button>
     <p class="quote-text" id="quoteText">지금 이 순간이 당신이 가진 전부입니다. 오늘 할 수 있는 일을 내일로 미루지 마세요.</p>
     <p class="quote-author" id="quoteAuthor">— 마르쿠스 아우렐리우스</p>
   </div>
 
+  <!-- 상단 탭 제어 -->
   <div class="mode-tabs">
     <button class="mode-tab active" data-tab="timer" id="tabTimer">타이머</button>
     <button class="mode-tab" data-tab="stats" id="tabStats">순공시간</button>
     <button class="mode-tab" data-tab="settings" id="tabSettings">설정</button>
   </div>
 
+  <!-- 타이머 패널 -->
   <div id="panelTimer">
     <div class="timer-display">
       <div class="timer-ring-wrap">
@@ -122,12 +132,28 @@
       <div class="session-dots" id="sessionDots"></div>
     </div>
     <div class="controls">
+      <!-- 초기화 버튼 (아이콘은 그대로 유지) -->
       <button class="ctrl-btn" id="btnReset" aria-label="초기화"><i class="ti ti-rotate-clockwise-2"></i></button>
-      <button class="ctrl-btn primary" id="btnPlay" aria-label="시작/일시정지"><i class="ti ti-player-play-filled"></i></button>
+      
+      <!-- [수정] 메인 버튼: 외부 라이브러리 대신 SVG 아이콘을 직접 삽입하여 완벽한 애플 감성 구현 -->
+      <button class="ctrl-btn primary" id="btnPlay" aria-label="시작/일시정지">
+        <!-- 시작(플레이) 아이콘: 애플 타이머 디자인 -->
+        <svg id="iconPlay" class="icon-svg" viewBox="0 0 100 100" style="display: block; margin-left: 3px;">
+          <polygon points="25,15 85,50 25,85" />
+        </svg>
+        <!-- 일시정지 아이콘: 애플 타이머 디자인 (초기엔 숨김) -->
+        <svg id="iconPause" class="icon-svg" viewBox="0 0 100 100" style="display: none;">
+          <rect x="25" y="15" width="15" height="70" rx="4"/>
+          <rect x="60" y="15" width="15" height="70" rx="4"/>
+        </svg>
+      </button>
+      
+      <!-- 건너뛰기 버튼 (아이콘은 그대로 유지) -->
       <button class="ctrl-btn" id="btnSkip" aria-label="건너뛰기"><i class="ti ti-player-skip-forward-filled"></i></button>
     </div>
   </div>
 
+  <!-- 순공 기록 패널 -->
   <div id="panelStats" style="display:none;">
     <div class="stats-row">
       <div class="stat-card">
@@ -152,6 +178,7 @@
     </div>
   </div>
 
+  <!-- 설정 패널 -->
   <div id="panelSettings" style="display:none;">
     <div class="settings-box">
       <div class="setting-row">
@@ -277,21 +304,32 @@ function tick() {
     nextPhase();
   }
 }
+
+// [수정] 메인 버튼 아이콘 변경 로직 통합
 function togglePlay() {
-  const btn = document.getElementById('btnPlay');
+  const iconPlay = document.getElementById('iconPlay');
+  const iconPause = document.getElementById('iconPause');
+  
   if (state.running) {
     clearInterval(state.interval); state.running = false;
-    btn.innerHTML = '<i class="ti ti-player-play-filled"></i>';
+    iconPause.style.display = 'none';
+    iconPlay.style.display = 'block'; // 플레이 아이콘 표시
   } else {
     state.interval = setInterval(tick, 1000); state.running = true;
-    btn.innerHTML = '<i class="ti ti-player-pause-filled"></i>';
+    iconPlay.style.display = 'none';
+    iconPause.style.display = 'block'; // 일시정지 아이콘 표시
   }
 }
+
 document.getElementById('btnPlay').addEventListener('click', togglePlay);
 document.getElementById('btnReset').addEventListener('click', () => {
   clearInterval(state.interval); state.running = false;
   state.mode = 'focus'; state.secondsLeft = cfg.focus * 60;
-  document.getElementById('btnPlay').innerHTML = '<i class="ti ti-player-play-filled"></i>';
+  
+  // 리셋 시 플레이 아이콘으로 초기화
+  document.getElementById('iconPause').style.display = 'none';
+  document.getElementById('iconPlay').style.display = 'block';
+  
   updateDisplay();
 });
 document.getElementById('btnSkip').addEventListener('click', () => { nextPhase(); });
