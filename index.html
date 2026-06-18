@@ -1,50 +1,99 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Study Focus Timer</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
+  <style>
+    /* Apple SF Pro 스타일 시스템 적용 */
+    :root {
+      --color-bg: #f5f5f7;
+      --color-card: #ffffff;
+      --color-text-primary: #1d1d1f;
+      --color-text-secondary: #86868b;
+      --color-accent: #0071e3; /* Apple Blue */
+      --color-accent-bg: #e8f2fc;
+      --color-border: rgba(0, 0, 0, 0.08);
+      
+      --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+      --border-radius-xl: 20px;
+      --border-radius-md: 12px;
+    }
 
-<style>
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { font-family: var(--font-sans); }
-.wrap { max-width: 480px; margin: 0 auto; padding: 2rem 1rem; }
-.quote-box { background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 1.25rem 1.5rem; margin-bottom: 2rem; position: relative; }
-.quote-text { font-size: 14px; color: var(--color-text-secondary); line-height: 1.7; font-style: italic; }
-.quote-author { font-size: 12px; color: var(--color-text-tertiary); margin-top: 6px; text-align: right; }
-.quote-refresh { position: absolute; top: 12px; right: 12px; background: none; border: none; cursor: pointer; color: var(--color-text-tertiary); font-size: 14px; padding: 4px; line-height: 1; }
-.quote-refresh:hover { color: var(--color-text-primary); }
-.mode-tabs { display: flex; gap: 4px; background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 4px; margin-bottom: 2rem; }
-.mode-tab { flex: 1; text-align: center; padding: 8px 0; font-size: 13px; border-radius: 6px; cursor: pointer; color: var(--color-text-secondary); border: none; background: transparent; transition: all 0.15s; }
-.mode-tab.active { background: var(--color-background-primary); color: var(--color-text-primary); font-weight: 500; border: 0.5px solid var(--color-border-tertiary); }
-.timer-display { text-align: center; margin-bottom: 2rem; }
-.timer-ring-wrap { display: inline-block; position: relative; margin-bottom: 1.5rem; }
-.timer-ring-wrap svg { display: block; }
-.timer-time { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; pointer-events: none; }
-.timer-time .t-min { font-size: 42px; font-weight: 500; color: var(--color-text-primary); letter-spacing: -2px; line-height: 1; }
-.timer-time .t-label { font-size: 11px; color: var(--color-text-tertiary); margin-top: 4px; }
-.session-label { font-size: 13px; color: var(--color-text-secondary); margin-bottom: 1.5rem; }
-.controls { display: flex; align-items: center; justify-content: center; gap: 12px; margin-bottom: 2rem; }
-.ctrl-btn { width: 48px; height: 48px; border-radius: 50%; border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 18px; color: var(--color-text-primary); transition: all 0.15s; }
-.ctrl-btn:hover { background: var(--color-background-secondary); }
-.ctrl-btn.primary { width: 60px; height: 60px; font-size: 22px; background: var(--color-text-primary); color: var(--color-background-primary); border: none; }
-.ctrl-btn.primary:hover { opacity: 0.85; }
-.stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 1.5rem; }
-.stat-card { background: var(--color-background-secondary); border-radius: var(--border-radius-md); padding: 12px; text-align: center; }
-.stat-val { font-size: 20px; font-weight: 500; color: var(--color-text-primary); }
-.stat-lbl { font-size: 11px; color: var(--color-text-tertiary); margin-top: 2px; }
-.session-dots { display: flex; justify-content: center; gap: 6px; }
-.dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-border-secondary); transition: background 0.3s; }
-.dot.done { background: var(--color-text-primary); }
-.dot.rest { background: var(--color-border-secondary); opacity: 0.4; }
-.setting-row { display: flex; align-items: center; gap: 12px; padding: 10px 0; border-bottom: 0.5px solid var(--color-border-tertiary); }
-.setting-row:last-child { border-bottom: none; }
-.setting-label { flex: 1; font-size: 14px; color: var(--color-text-primary); }
-.setting-sub { font-size: 12px; color: var(--color-text-tertiary); margin-top: 2px; }
-.num-ctrl { display: flex; align-items: center; gap: 8px; }
-.num-btn { width: 28px; height: 28px; border-radius: var(--border-radius-md); border: 0.5px solid var(--color-border-secondary); background: var(--color-background-primary); cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; color: var(--color-text-primary); }
-.num-val { font-size: 14px; font-weight: 500; min-width: 28px; text-align: center; color: var(--color-text-primary); }
-</style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: var(--font-sans); background: var(--color-bg); color: var(--color-text-primary); -webkit-font-smoothing: antialiased; }
+    
+    .wrap { max-width: 420px; margin: 4rem auto; padding: 0 1.5rem; }
+    
+    /* 명언 박스 - 가볍고 반투명한 블러 효과 */
+    .quote-box { background: var(--color-card); border-radius: var(--border-radius-xl); padding: 1.5rem; margin-bottom: 1.5rem; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid var(--color-border); }
+    .quote-text { font-size: 14px; color: var(--color-text-primary); line-height: 1.6; font-weight: 400; padding-right: 1.5rem; }
+    .quote-author { font-size: 12px; color: var(--color-text-secondary); margin-top: 8px; font-weight: 500; }
+    .quote-refresh { position: absolute; top: 1.25rem; right: 1.25rem; background: none; border: none; cursor: pointer; color: var(--color-text-secondary); font-size: 16px; transition: color 0.2s; }
+    .quote-refresh:hover { color: var(--color-text-primary); }
+    
+    /* 탭 메뉴 - 애플 제어센터 스타일 */
+    .mode-tabs { display: flex; background: rgba(0,0,0,0.04); border-radius: var(--border-radius-md); padding: 3px; margin-bottom: 2rem; }
+    .mode-tab { flex: 1; text-align: center; padding: 10px 0; font-size: 13px; font-weight: 500; border-radius: 9px; cursor: pointer; color: var(--color-text-secondary); border: none; background: transparent; transition: all 0.2s ease-in-out; }
+    .mode-tab.active { background: var(--color-card); color: var(--color-text-primary); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+    
+    /* 타이머 디스플레이 */
+    .timer-display { text-align: center; margin-bottom: 2.5rem; }
+    .timer-ring-wrap { display: inline-block; position: relative; margin-bottom: 1rem; }
+    .timer-time { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); text-align: center; }
+    .timer-time .t-min { font-size: 46px; font-weight: 300; color: var(--color-text-primary); letter-spacing: -1px; }
+    .timer-time .t-label { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin-top: 2px; }
+    
+    .session-label { font-size: 14px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 1rem; }
+    .session-dots { display: flex; justify-content: center; gap: 6px; }
+    .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(0,0,0,0.1); transition: all 0.3s; }
+    .dot.done { background: var(--color-text-primary); transform: scale(1.2); }
+    
+    /* 컨트롤 버튼 - 에어팟 케이스 같은 유려한 곡선 */
+    .controls { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 1rem; }
+    .ctrl-btn { width: 52px; height: 52px; border-radius: 50%; border: none; background: var(--color-card); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--color-text-primary); box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.2s; }
+    .ctrl-btn:hover { transform: scale(1.05); background: #fdfdfd; }
+    .ctrl-btn:active { transform: scale(0.95); }
+    .ctrl-btn.primary { width: 68px; height: 68px; font-size: 26px; background: var(--color-text-primary); color: var(--color-card); }
+    .ctrl-btn.primary:hover { background: #2d2d2f; }
+    
+    /* 순공 시간 & 통계 카드 */
+    .stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
+    .stat-card { background: var(--color-card); border-radius: var(--border-radius-md); padding: 16px 8px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid var(--color-border); }
+    .stat-val { font-size: 22px; font-weight: 600; color: var(--color-accent); letter-spacing: -0.5px; }
+    .stat-lbl { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; font-weight: 500; }
+    
+    .log-container { background: var(--color-card); border-radius: var(--border-radius-xl); padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid var(--color-border); }
+    .log-title { font-size: 14px; font-weight: 600; margin-bottom: 1rem; color: var(--color-text-primary); }
+    .log-list { font-size: 13px; color: var(--color-text-secondary); line-height: 2; }
+    .log-item { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.02); padding: 4px 0; }
+    
+    /* 설정 행 스타일 */
+    .settings-box { background: var(--color-card); border-radius: var(--border-radius-xl); padding: 0 1.25rem; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid var(--color-border); }
+    .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 0; border-bottom: 1px solid var(--color-border); }
+    .setting-row:last-child { border-bottom: none; }
+    .setting-label { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
+    .setting-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+    
+    .num-ctrl { display: flex; align-items: center; gap: 12px; }
+    .num-btn { width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(0,0,0,0.04); cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; color: var(--color-text-primary); transition: background 0.2s; }
+    .num-btn:hover { background: rgba(0,0,0,0.08); }
+    .num-val { font-size: 15px; font-weight: 600; min-width: 24px; text-align: center; }
+    
+    .text-btn { background: none; border: none; color: var(--color-text-secondary); font-size: 12px; cursor: pointer; font-weight: 500; margin-top: 12px; text-decoration: underline; }
+    .text-btn:hover { color: #ff3b30; } /* Apple Red */
+    
+    .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+  </style>
+</head>
+<body>
 
 <h2 class="sr-only">공부 집중 타이머 — 뽀모도로 방식 타이머, 명언, 순공시간 기록</h2>
 
 <div class="wrap">
   <div class="quote-box" id="quoteBox">
-    <button class="quote-refresh" id="quoteRefreshBtn" aria-label="명언 새로 보기"><i class="ti ti-refresh" aria-hidden="true"></i></button>
+    <button class="quote-refresh" id="quoteRefreshBtn" aria-label="명언 새로 보기"><i class="ti ti-refresh"></i></button>
     <p class="quote-text" id="quoteText">지금 이 순간이 당신이 가진 전부입니다. 오늘 할 수 있는 일을 내일로 미루지 마세요.</p>
     <p class="quote-author" id="quoteAuthor">— 마르쿠스 아우렐리우스</p>
   </div>
@@ -58,11 +107,11 @@ body { font-family: var(--font-sans); }
   <div id="panelTimer">
     <div class="timer-display">
       <div class="timer-ring-wrap">
-        <svg width="200" height="200" viewBox="0 0 200 200">
-          <circle cx="100" cy="100" r="88" fill="none" stroke="var(--color-border-tertiary)" stroke-width="6"/>
-          <circle id="progressRing" cx="100" cy="100" r="88" fill="none" stroke="var(--color-text-primary)" stroke-width="6"
+        <svg width="220" height="220" viewBox="0 0 200 200">
+          <circle cx="100" cy="100" r="88" fill="none" stroke="rgba(0,0,0,0.04)" stroke-width="5"/>
+          <circle id="progressRing" cx="100" cy="100" r="88" fill="none" stroke="var(--color-accent)" stroke-width="5"
             stroke-linecap="round" stroke-dasharray="552.9" stroke-dashoffset="0" transform="rotate(-90 100 100)"
-            style="transition: stroke-dashoffset 0.8s ease, stroke 0.3s;"/>
+            style="transition: stroke-dashoffset 0.3s linear, stroke 0.3s;"/>
         </svg>
         <div class="timer-time">
           <div class="t-min" id="timerDisplay">25:00</div>
@@ -73,9 +122,9 @@ body { font-family: var(--font-sans); }
       <div class="session-dots" id="sessionDots"></div>
     </div>
     <div class="controls">
-      <button class="ctrl-btn" id="btnReset" aria-label="초기화"><i class="ti ti-player-skip-back" aria-hidden="true"></i></button>
-      <button class="ctrl-btn primary" id="btnPlay" aria-label="시작/일시정지"><i class="ti ti-player-play" aria-hidden="true"></i></button>
-      <button class="ctrl-btn" id="btnSkip" aria-label="건너뛰기"><i class="ti ti-player-skip-forward" aria-hidden="true"></i></button>
+      <button class="ctrl-btn" id="btnReset" aria-label="초기화"><i class="ti ti-rotate-clockwise-2"></i></button>
+      <button class="ctrl-btn primary" id="btnPlay" aria-label="시작/일시정지"><i class="ti ti-player-play-filled"></i></button>
+      <button class="ctrl-btn" id="btnSkip" aria-label="건너뛰기"><i class="ti ti-player-skip-forward-filled"></i></button>
     </div>
   </div>
 
@@ -94,24 +143,23 @@ body { font-family: var(--font-sans); }
         <div class="stat-lbl">연속 일수</div>
       </div>
     </div>
-    <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 1.25rem;">
-      <div style="font-size: 13px; font-weight: 500; margin-bottom: 12px; color: var(--color-text-primary);">오늘의 집중 기록</div>
-      <div id="logList" style="font-size: 13px; color: var(--color-text-tertiary); line-height: 2;">기록 없음</div>
+    <div class="log-container">
+      <div class="log-title">오늘의 집중 기록</div>
+      <div id="logList" class="log-list">기록 없음</div>
     </div>
-    <div style="margin-top: 12px; text-align: right;">
-      <button class="ctrl-btn" style="width: auto; height: auto; border-radius: var(--border-radius-md); padding: 8px 16px; font-size: 13px; border-radius: 8px;" id="btnClearLog">기록 초기화</button>
+    <div style="text-align: right;">
+      <button class="text-btn" id="btnClearLog">기록 초기화</button>
     </div>
   </div>
 
   <div id="panelSettings" style="display:none;">
-    <div style="background: var(--color-background-secondary); border-radius: var(--border-radius-lg); padding: 0 1.25rem;">
+    <div class="settings-box">
       <div class="setting-row">
         <div><div class="setting-label">집중 시간</div></div>
         <div class="num-ctrl">
           <button class="num-btn" data-key="focus" data-dir="-1">−</button>
           <div class="num-val" id="setFocus">25</div>
           <button class="num-btn" data-key="focus" data-dir="1">+</button>
-          <span style="font-size:12px; color:var(--color-text-tertiary);">분</span>
         </div>
       </div>
       <div class="setting-row">
@@ -120,7 +168,6 @@ body { font-family: var(--font-sans); }
           <button class="num-btn" data-key="short" data-dir="-1">−</button>
           <div class="num-val" id="setShort">5</div>
           <button class="num-btn" data-key="short" data-dir="1">+</button>
-          <span style="font-size:12px; color:var(--color-text-tertiary);">분</span>
         </div>
       </div>
       <div class="setting-row">
@@ -129,11 +176,13 @@ body { font-family: var(--font-sans); }
           <button class="num-btn" data-key="long" data-dir="-1">−</button>
           <div class="num-val" id="setLong">15</div>
           <button class="num-btn" data-key="long" data-dir="1">+</button>
-          <span style="font-size:12px; color:var(--color-text-tertiary);">분</span>
         </div>
       </div>
       <div class="setting-row">
-        <div><div class="setting-label">세션 수</div><div class="setting-sub">긴 휴식 전 집중 횟수</div></div>
+        <div>
+          <div class="setting-label">세션 수</div>
+          <div class="setting-sub">긴 휴식 전 집중 횟수</div>
+        </div>
         <div class="num-ctrl">
           <button class="num-btn" data-key="sessions" data-dir="-1">−</button>
           <div class="num-val" id="setSessions">4</div>
@@ -183,7 +232,7 @@ function updateRing() {
   const frac = state.secondsLeft / total;
   const ring = document.getElementById('progressRing');
   ring.setAttribute('stroke-dashoffset', String(CIRC * (1 - frac)));
-  ring.style.stroke = state.mode === 'focus' ? 'var(--color-text-primary)' : '#888';
+  ring.style.stroke = state.mode === 'focus' ? 'var(--color-accent)' : '#a2a2a7';
 }
 function updateDisplay() {
   document.getElementById('timerDisplay').textContent = fmt(state.secondsLeft);
@@ -232,17 +281,17 @@ function togglePlay() {
   const btn = document.getElementById('btnPlay');
   if (state.running) {
     clearInterval(state.interval); state.running = false;
-    btn.innerHTML = '<i class="ti ti-player-play" aria-hidden="true"></i>';
+    btn.innerHTML = '<i class="ti ti-player-play-filled"></i>';
   } else {
     state.interval = setInterval(tick, 1000); state.running = true;
-    btn.innerHTML = '<i class="ti ti-player-pause" aria-hidden="true"></i>';
+    btn.innerHTML = '<i class="ti ti-player-pause-filled"></i>';
   }
 }
 document.getElementById('btnPlay').addEventListener('click', togglePlay);
 document.getElementById('btnReset').addEventListener('click', () => {
   clearInterval(state.interval); state.running = false;
   state.mode = 'focus'; state.secondsLeft = cfg.focus * 60;
-  document.getElementById('btnPlay').innerHTML = '<i class="ti ti-player-play" aria-hidden="true"></i>';
+  document.getElementById('btnPlay').innerHTML = '<i class="ti ti-player-play-filled"></i>';
   updateDisplay();
 });
 document.getElementById('btnSkip').addEventListener('click', () => { nextPhase(); });
@@ -253,7 +302,9 @@ function updateStats() {
   document.getElementById('statTotal').textContent = h + 'h ' + m + 'm';
   document.getElementById('statSessions').textContent = state.focusDone;
   const logs = state.logs;
-  document.getElementById('logList').innerHTML = logs.length ? logs.slice(-8).reverse().map(l => '<div>' + l + '</div>').join('') : '기록 없음';
+  document.getElementById('logList').innerHTML = logs.length 
+    ? logs.slice(-8).reverse().map(l => '<div class="log-item"><span>' + l.split(' — ')[1] + '</span><span style="color:var(--color-text-secondary);">' + l.split(' — ')[0] + '</span></div>').join('') 
+    : '기록 없음';
 }
 document.getElementById('btnClearLog').addEventListener('click', () => {
   state.logs = []; state.totalFocusSec = 0; state.focusDone = 0;
@@ -286,3 +337,5 @@ document.querySelectorAll('.num-btn').forEach(btn => {
 
 updateDisplay();
 </script>
+</body>
+</html>
