@@ -4,17 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Study Focus Timer</title>
-  <!-- 기존 아이콘 라이브러리는 그대로 두되, 메인 버튼은 SVG로 대체합니다. -->
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/dist/tabler-icons.min.css">
   <style>
-    /* Apple SF Pro 스타일 시스템 적용 */
     :root {
       --color-bg: #f5f5f7;
       --color-card: #ffffff;
       --color-text-primary: #1d1d1f;
       --color-text-secondary: #86868b;
-      --color-accent: #0071e3; /* Apple Blue */
-      --color-accent-bg: #e8f2fc;
+      --color-accent: #0071e3;
       --color-border: rgba(0, 0, 0, 0.08);
       
       --font-sans: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
@@ -29,14 +26,13 @@
     
     /* 명언 박스 */
     .quote-box { background: var(--color-card); border-radius: var(--border-radius-xl); padding: 1.5rem; margin-bottom: 1.5rem; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid var(--color-border); }
-    .quote-text { font-size: 14px; color: var(--color-text-primary); line-height: 1.6; font-weight: 400; padding-right: 1.5rem; }
+    .quote-text { font-size: 14px; color: var(--color-text-primary); line-height: 1.6; padding-right: 1.5rem; }
     .quote-author { font-size: 12px; color: var(--color-text-secondary); margin-top: 8px; font-weight: 500; }
-    .quote-refresh { position: absolute; top: 1.25rem; right: 1.25rem; background: none; border: none; cursor: pointer; color: var(--color-text-secondary); font-size: 16px; transition: color 0.2s; }
-    .quote-refresh:hover { color: var(--color-text-primary); }
+    .quote-refresh { position: absolute; top: 1.25rem; right: 1.25rem; background: none; border: none; cursor: pointer; color: var(--color-text-secondary); font-size: 16px; }
     
     /* 탭 메뉴 */
     .mode-tabs { display: flex; background: rgba(0,0,0,0.04); border-radius: var(--border-radius-md); padding: 3px; margin-bottom: 2rem; }
-    .mode-tab { flex: 1; text-align: center; padding: 10px 0; font-size: 13px; font-weight: 500; border-radius: 9px; cursor: pointer; color: var(--color-text-secondary); border: none; background: transparent; transition: all 0.2s ease-in-out; }
+    .mode-tab { flex: 1; text-align: center; padding: 10px 0; font-size: 13px; font-weight: 500; border-radius: 9px; cursor: pointer; color: var(--color-text-secondary); border: none; background: transparent; transition: all 0.2s; }
     .mode-tab.active { background: var(--color-card); color: var(--color-text-primary); box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
     
     /* 타이머 디스플레이 */
@@ -46,57 +42,49 @@
     .timer-time .t-min { font-size: 46px; font-weight: 300; color: var(--color-text-primary); letter-spacing: -1px; }
     .timer-time .t-label { font-size: 13px; font-weight: 500; color: var(--color-text-secondary); margin-top: 2px; }
     
-    .session-label { font-size: 14px; font-weight: 500; color: var(--color-text-secondary); margin-bottom: 1rem; }
-    .session-dots { display: flex; justify-content: center; gap: 6px; }
-    .dot { width: 6px; height: 6px; border-radius: 50%; background: rgba(0,0,0,0.1); transition: all 0.3s; }
-    .dot.done { background: var(--color-text-primary); transform: scale(1.2); }
-    
-    /* 컨트롤 버튼 - 메인 버튼 문제 해결 및 아이콘 중앙 정렬 */
+    /* 컨트롤 버튼 */
     .controls { display: flex; align-items: center; justify-content: center; gap: 16px; margin-bottom: 1rem; }
     .ctrl-btn { width: 52px; height: 52px; border-radius: 50%; border: none; background: var(--color-card); cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; color: var(--color-text-primary); box-shadow: 0 4px 12px rgba(0,0,0,0.05); transition: all 0.2s; }
-    .ctrl-btn:hover { transform: scale(1.05); background: #fdfdfd; }
+    .ctrl-btn:hover { transform: scale(1.05); }
     .ctrl-btn:active { transform: scale(0.95); }
     
-    /* [수정] 메인 버튼 디자인 업데이트: 내부 아이콘 가독성 확보 */
     .ctrl-btn.primary { width: 68px; height: 68px; background: var(--color-text-primary); color: var(--color-card); }
     .ctrl-btn.primary:hover { background: #2d2d2f; }
     
-    /* [추가] SVG 아이콘 전용 스타일: 중앙 정렬 */
     .icon-svg { width: 1em; height: 1em; fill: currentColor; display: block; }
-    .ctrl-btn.primary .icon-svg { font-size: 26px; } /* 메인 버튼 아이콘 크기 */
+    .ctrl-btn.primary .icon-svg { font-size: 26px; }
     
-    /* 순공 시간 & 통계 카드 */
-    .stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 10px; margin-bottom: 1.5rem; }
-    .stat-card { background: var(--color-card); border-radius: var(--border-radius-md); padding: 16px 8px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid var(--color-border); }
-    .stat-val { font-size: 22px; font-weight: 600; color: var(--color-accent); letter-spacing: -0.5px; }
+    /* 순공 기록 패널 */
+    .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.5rem; }
+    .stat-card { background: var(--color-card); border-radius: var(--border-radius-md); padding: 18px 8px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid var(--color-border); }
+    .stat-val { font-size: 24px; font-weight: 600; color: var(--color-accent); letter-spacing: -0.5px; }
     .stat-lbl { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; font-weight: 500; }
     
     .log-container { background: var(--color-card); border-radius: var(--border-radius-xl); padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid var(--color-border); }
-    .log-title { font-size: 14px; font-weight: 600; margin-bottom: 1rem; color: var(--color-text-primary); }
+    .log-title { font-size: 14px; font-weight: 600; margin-bottom: 1rem; }
     .log-list { font-size: 13px; color: var(--color-text-secondary); line-height: 2; }
     .log-item { display: flex; justify-content: space-between; border-bottom: 1px solid rgba(0,0,0,0.02); padding: 4px 0; }
     
-    /* 설정 행 스타일 */
+    /* 설정 패널 */
     .settings-box { background: var(--color-card); border-radius: var(--border-radius-xl); padding: 0 1.25rem; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid var(--color-border); }
     .setting-row { display: flex; align-items: center; justify-content: space-between; padding: 1.25rem 0; border-bottom: 1px solid var(--color-border); }
     .setting-row:last-child { border-bottom: none; }
-    .setting-label { font-size: 15px; font-weight: 500; color: var(--color-text-primary); }
-    .setting-sub { font-size: 12px; color: var(--color-text-secondary); margin-top: 2px; }
+    .setting-label { font-size: 15px; font-weight: 500; }
     
     .num-ctrl { display: flex; align-items: center; gap: 12px; }
-    .num-btn { width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(0,0,0,0.04); cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; color: var(--color-text-primary); transition: background 0.2s; }
+    .num-btn { width: 32px; height: 32px; border-radius: 50%; border: none; background: rgba(0,0,0,0.04); cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; }
     .num-btn:hover { background: rgba(0,0,0,0.08); }
     .num-val { font-size: 15px; font-weight: 600; min-width: 24px; text-align: center; }
     
     .text-btn { background: none; border: none; color: var(--color-text-secondary); font-size: 12px; cursor: pointer; font-weight: 500; margin-top: 12px; text-decoration: underline; }
-    .text-btn:hover { color: #ff3b30; } /* Apple Red */
+    .text-btn:hover { color: #ff3b30; }
     
     .sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
   </style>
 </head>
 <body>
 
-<h2 class="sr-only">공부 집중 타이머 — 뽀모도로 방식 타이머, 명언, 순공시간 기록</h2>
+<h2 class="sr-only">공부 집중 타이머 — 명언 및 순공시간 기록</h2>
 
 <div class="wrap">
   <!-- 명언 영역 -->
@@ -106,14 +94,14 @@
     <p class="quote-author" id="quoteAuthor">— 마르쿠스 아우렐리우스</p>
   </div>
 
-  <!-- 상단 탭 제어 -->
+  <!-- 상단 탭 -->
   <div class="mode-tabs">
     <button class="mode-tab active" data-tab="timer" id="tabTimer">타이머</button>
     <button class="mode-tab" data-tab="stats" id="tabStats">순공시간</button>
     <button class="mode-tab" data-tab="settings" id="tabSettings">설정</button>
   </div>
 
-  <!-- 타이머 패널 -->
+  <!-- 타이머 패널 (세션 라벨 및 점 완전히 삭제) -->
   <div id="panelTimer">
     <div class="timer-display">
       <div class="timer-ring-wrap">
@@ -128,28 +116,21 @@
           <div class="t-label" id="timerLabel">집중</div>
         </div>
       </div>
-      <div class="session-label" id="sessionLabel">세션 1 / 4</div>
-      <div class="session-dots" id="sessionDots"></div>
     </div>
     <div class="controls">
-      <!-- 초기화 버튼 (아이콘은 그대로 유지) -->
       <button class="ctrl-btn" id="btnReset" aria-label="초기화"><i class="ti ti-rotate-clockwise-2"></i></button>
       
-      <!-- [수정] 메인 버튼: 외부 라이브러리 대신 SVG 아이콘을 직접 삽입하여 완벽한 애플 감성 구현 -->
       <button class="ctrl-btn primary" id="btnPlay" aria-label="시작/일시정지">
-        <!-- 시작(플레이) 아이콘: 애플 타이머 디자인 -->
         <svg id="iconPlay" class="icon-svg" viewBox="0 0 100 100" style="display: block; margin-left: 3px;">
           <polygon points="25,15 85,50 25,85" />
         </svg>
-        <!-- 일시정지 아이콘: 애플 타이머 디자인 (초기엔 숨김) -->
         <svg id="iconPause" class="icon-svg" viewBox="0 0 100 100" style="display: none;">
           <rect x="25" y="15" width="15" height="70" rx="4"/>
           <rect x="60" y="15" width="15" height="70" rx="4"/>
         </svg>
       </button>
       
-      <!-- 건너뛰기 버튼 (아이콘은 그대로 유지) -->
-      <button class="ctrl-btn" id="btnSkip" aria-label="건너뛰기"><i class="ti ti-player-skip-forward-filled"></i></button>
+      <button class="ctrl-btn" id="btnSkip" aria-label="모드 전환(건너뛰기)"><i class="ti ti-player-skip-forward-filled"></i></button>
     </div>
   </div>
 
@@ -158,15 +139,11 @@
     <div class="stats-row">
       <div class="stat-card">
         <div class="stat-val" id="statTotal">0h 0m</div>
-        <div class="stat-lbl">오늘 순공</div>
+        <div class="stat-lbl">오늘 순공 시간</div>
       </div>
       <div class="stat-card">
-        <div class="stat-val" id="statSessions">0</div>
-        <div class="stat-lbl">완료 세션</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val" id="statStreak">0</div>
-        <div class="stat-lbl">연속 일수</div>
+        <div class="stat-val" id="statSessions">0회</div>
+        <div class="stat-lbl">집중 완료 횟수</div>
       </div>
     </div>
     <div class="log-container">
@@ -178,7 +155,7 @@
     </div>
   </div>
 
-  <!-- 설정 패널 -->
+  <!-- 설정 패널 (긴 휴식 및 강제 세션 수 삭제) -->
   <div id="panelSettings" style="display:none;">
     <div class="settings-box">
       <div class="setting-row">
@@ -190,30 +167,11 @@
         </div>
       </div>
       <div class="setting-row">
-        <div><div class="setting-label">짧은 휴식</div></div>
+        <div><div class="setting-label">휴식 시간</div></div>
         <div class="num-ctrl">
-          <button class="num-btn" data-key="short" data-dir="-1">−</button>
-          <div class="num-val" id="setShort">5</div>
-          <button class="num-btn" data-key="short" data-dir="1">+</button>
-        </div>
-      </div>
-      <div class="setting-row">
-        <div><div class="setting-label">긴 휴식</div></div>
-        <div class="num-ctrl">
-          <button class="num-btn" data-key="long" data-dir="-1">−</button>
-          <div class="num-val" id="setLong">15</div>
-          <button class="num-btn" data-key="long" data-dir="1">+</button>
-        </div>
-      </div>
-      <div class="setting-row">
-        <div>
-          <div class="setting-label">세션 수</div>
-          <div class="setting-sub">긴 휴식 전 집중 횟수</div>
-        </div>
-        <div class="num-ctrl">
-          <button class="num-btn" data-key="sessions" data-dir="-1">−</button>
-          <div class="num-val" id="setSessions">4</div>
-          <button class="num-btn" data-key="sessions" data-dir="1">+</button>
+          <button class="num-btn" data-key="break" data-dir="-1">−</button>
+          <div class="num-val" id="setBreak">5</div>
+          <button class="num-btn" data-key="break" data-dir="1">+</button>
         </div>
       </div>
     </div>
@@ -241,8 +199,9 @@ function showQuote(i) {
 }
 document.getElementById('quoteRefreshBtn').addEventListener('click', () => { qIdx = (qIdx + 1) % quotes.length; showQuote(qIdx); });
 
-const cfg = { focus: 25, short: 5, long: 15, sessions: 4 };
-let state = { running: false, mode: 'focus', session: 1, secondsLeft: cfg.focus * 60, interval: null, focusDone: 0, totalFocusSec: 0, logs: [] };
+// 긴 휴식, 세션 변수 삭제 -> 집중(focus)과 휴식(break)만 남김
+const cfg = { focus: 25, break: 5 };
+let state = { running: false, mode: 'focus', secondsLeft: cfg.focus * 60, interval: null, focusDone: 0, totalFocusSec: 0, logs: [] };
 const CIRC = 2 * Math.PI * 88;
 
 function fmt(s) {
@@ -250,9 +209,7 @@ function fmt(s) {
   return String(m).padStart(2,'0') + ':' + String(sec).padStart(2,'0');
 }
 function modeTotal() {
-  if (state.mode === 'focus') return cfg.focus * 60;
-  if (state.mode === 'short') return cfg.short * 60;
-  return cfg.long * 60;
+  return state.mode === 'focus' ? cfg.focus * 60 : cfg.break * 60;
 }
 function updateRing() {
   const total = modeTotal();
@@ -263,21 +220,10 @@ function updateRing() {
 }
 function updateDisplay() {
   document.getElementById('timerDisplay').textContent = fmt(state.secondsLeft);
-  const labels = { focus: '집중', short: '짧은 휴식', long: '긴 휴식' };
-  document.getElementById('timerLabel').textContent = labels[state.mode];
-  document.getElementById('sessionLabel').textContent = '세션 ' + state.session + ' / ' + cfg.sessions;
+  document.getElementById('timerLabel').textContent = state.mode === 'focus' ? '집중' : '휴식';
   updateRing();
-  updateDots();
 }
-function updateDots() {
-  const c = document.getElementById('sessionDots');
-  c.innerHTML = '';
-  for (let i = 1; i <= cfg.sessions; i++) {
-    const d = document.createElement('div');
-    d.className = 'dot' + (i < state.session ? ' done' : '');
-    c.appendChild(d);
-  }
-}
+
 function nextPhase() {
   if (state.mode === 'focus') {
     state.focusDone++;
@@ -285,13 +231,9 @@ function nextPhase() {
     const now = new Date();
     state.logs.push(now.getHours() + ':' + String(now.getMinutes()).padStart(2,'0') + ' — 집중 ' + cfg.focus + '분 완료');
     updateStats();
-    if (state.focusDone % cfg.sessions === 0) {
-      state.mode = 'long'; state.session = 1;
-    } else {
-      state.mode = 'short'; state.session = Math.min(state.session + 1, cfg.sessions);
-    }
+    state.mode = 'break'; // 집중 끝나면 그냥 바로 휴식 모드로
   } else {
-    state.mode = 'focus';
+    state.mode = 'focus'; // 휴식 끝나면 집중 모드로
   }
   state.secondsLeft = modeTotal();
   updateDisplay();
@@ -305,7 +247,6 @@ function tick() {
   }
 }
 
-// [수정] 메인 버튼 아이콘 변경 로직 통합
 function togglePlay() {
   const iconPlay = document.getElementById('iconPlay');
   const iconPause = document.getElementById('iconPause');
@@ -313,32 +254,34 @@ function togglePlay() {
   if (state.running) {
     clearInterval(state.interval); state.running = false;
     iconPause.style.display = 'none';
-    iconPlay.style.display = 'block'; // 플레이 아이콘 표시
+    iconPlay.style.display = 'block';
   } else {
     state.interval = setInterval(tick, 1000); state.running = true;
     iconPlay.style.display = 'none';
-    iconPause.style.display = 'block'; // 일시정지 아이콘 표시
+    iconPause.style.display = 'block';
   }
 }
 
 document.getElementById('btnPlay').addEventListener('click', togglePlay);
 document.getElementById('btnReset').addEventListener('click', () => {
   clearInterval(state.interval); state.running = false;
-  state.mode = 'focus'; state.secondsLeft = cfg.focus * 60;
-  
-  // 리셋 시 플레이 아이콘으로 초기화
+  state.secondsLeft = modeTotal();
   document.getElementById('iconPause').style.display = 'none';
   document.getElementById('iconPlay').style.display = 'block';
-  
   updateDisplay();
 });
-document.getElementById('btnSkip').addEventListener('click', () => { nextPhase(); });
+document.getElementById('btnSkip').addEventListener('click', () => { 
+  // 건너뛰기 누르면 현재 타이머 기록 없이 그냥 다음 단계(집중<->휴식)로 패스
+  state.mode = state.mode === 'focus' ? 'break' : 'focus';
+  state.secondsLeft = modeTotal();
+  updateDisplay();
+});
 
 function updateStats() {
   const h = Math.floor(state.totalFocusSec / 3600);
   const m = Math.floor((state.totalFocusSec % 3600) / 60);
   document.getElementById('statTotal').textContent = h + 'h ' + m + 'm';
-  document.getElementById('statSessions').textContent = state.focusDone;
+  document.getElementById('statSessions').textContent = state.focusDone + '회';
   const logs = state.logs;
   document.getElementById('logList').innerHTML = logs.length 
     ? logs.slice(-8).reverse().map(l => '<div class="log-item"><span>' + l.split(' — ')[1] + '</span><span style="color:var(--color-text-secondary);">' + l.split(' — ')[0] + '</span></div>').join('') 
@@ -347,7 +290,6 @@ function updateStats() {
 document.getElementById('btnClearLog').addEventListener('click', () => {
   state.logs = []; state.totalFocusSec = 0; state.focusDone = 0;
   updateStats();
-  document.getElementById('statStreak').textContent = '0';
 });
 
 document.querySelectorAll('.mode-tab').forEach(tab => {
@@ -364,10 +306,10 @@ document.querySelectorAll('.mode-tab').forEach(tab => {
 document.querySelectorAll('.num-btn').forEach(btn => {
   btn.addEventListener('click', () => {
     const key = btn.dataset.key, dir = parseInt(btn.dataset.dir);
-    const mins = { focus: [5,60], short: [1,30], long: [5,60], sessions: [2,8] };
+    const mins = { focus: [5,60], break: [1,30] };
     const [mn, mx] = mins[key];
     cfg[key] = Math.min(mx, Math.max(mn, cfg[key] + dir));
-    const ids = { focus: 'setFocus', short: 'setShort', long: 'setLong', sessions: 'setSessions' };
+    const ids = { focus: 'setFocus', break: 'setBreak' };
     document.getElementById(ids[key]).textContent = cfg[key];
     if (!state.running) { state.secondsLeft = modeTotal(); updateDisplay(); }
   });
