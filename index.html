@@ -28,7 +28,7 @@
     .quote-box { background: var(--color-card); border-radius: var(--border-radius-xl); padding: 1.5rem; margin-bottom: 1.5rem; position: relative; box-shadow: 0 4px 20px rgba(0,0,0,0.03); border: 1px solid var(--color-border); }
     .quote-text { font-size: 14px; color: var(--color-text-primary); line-height: 1.6; padding-right: 1.5rem; }
     .quote-author { font-size: 12px; color: var(--color-text-secondary); margin-top: 8px; font-weight: 500; }
-    .quote-refresh { position: absolute; top: 1.25rem; right: 1.25rem; background: none; border: none; cursor: pointer; color: var(--color-text-secondary); font-size: 16px; }
+    .quote-refresh { position: absolute; top: 1.25rem; right: 1.25rem; background: none; border: none; cursor: pointer; color: var(--text-secondary); font-size: 16px; }
     
     /* 탭 메뉴 */
     .mode-tabs { display: flex; background: rgba(0,0,0,0.04); border-radius: var(--border-radius-md); padding: 3px; margin-bottom: 2rem; }
@@ -57,7 +57,8 @@
     /* 순공 기록 패널 */
     .stats-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 1.5rem; }
     .stat-card { background: var(--color-card); border-radius: var(--border-radius-md); padding: 18px 8px; text-align: center; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid var(--color-border); }
-    .stat-val { font-size: 24px; font-weight: 600; color: var(--color-accent); letter-spacing: -0.5px; }
+    /* [수정] 렌더링 시스템이 확실하게 인식할 수 있도록 타겟팅 재정비 */
+    .stat-val { font-size: 22px; font-weight: 600; color: var(--color-accent); letter-spacing: -0.5px; white-space: nowrap; }
     .stat-lbl { font-size: 12px; color: var(--color-text-secondary); margin-top: 4px; font-weight: 500; }
     
     .log-container { background: var(--color-card); border-radius: var(--border-radius-xl); padding: 1.5rem; box-shadow: 0 4px 12px rgba(0,0,0,0.03); border: 1px solid var(--color-border); }
@@ -87,18 +88,21 @@
 <h2 class="sr-only">공부 집중 타이머 — 명언 및 순공시간 기록</h2>
 
 <div class="wrap">
+  <!-- 명언 영역 -->
   <div class="quote-box" id="quoteBox">
     <button class="quote-refresh" id="quoteRefreshBtn" aria-label="명언 새로 보기"><i class="ti ti-refresh"></i></button>
     <p class="quote-text" id="quoteText">지금 이 순간이 당신이 가진 전부입니다. 오늘 할 수 있는 일을 내일로 미루지 마세요.</p>
     <p class="quote-author" id="quoteAuthor">— 마르쿠스 아우렐리우스</p>
   </div>
 
+  <!-- 상단 탭 -->
   <div class="mode-tabs">
     <button class="mode-tab active" data-tab="timer" id="tabTimer">타이머</button>
     <button class="mode-tab" data-tab="stats" id="tabStats">순공시간</button>
     <button class="mode-tab" data-tab="settings" id="tabSettings">설정</button>
   </div>
 
+  <!-- 타이머 패널 -->
   <div id="panelTimer">
     <div class="timer-display">
       <div class="timer-ring-wrap">
@@ -130,9 +134,11 @@
     </div>
   </div>
 
+  <!-- 순공 기록 패널 -->
   <div id="panelStats" style="display:none;">
     <div class="stats-row">
       <div class="stat-card">
+        <!-- [확인] 아이디 매칭 확실히 고정 -->
         <div class="stat-val" id="statTotal">0h 0m 0s</div>
         <div class="stat-lbl">오늘 순공 시간</div>
       </div>
@@ -150,6 +156,7 @@
     </div>
   </div>
 
+  <!-- 설정 패널 -->
   <div id="panelSettings" style="display:none;">
     <div class="settings-box">
       <div class="setting-row">
@@ -231,13 +238,12 @@ function nextPhase() {
   updateStats();
 }
 
-// [수정] 타이머가 갈 때 '집중 모드'라면 순공시간(totalFocusSec)을 실시간으로 1초씩 더해줍니다.
 function tick() {
   if (state.secondsLeft > 0) {
     state.secondsLeft--;
     if (state.mode === 'focus') {
-      state.totalFocusSec++; // 실시간으로 초 누적
-      updateStats();         // 스탯 텍스트 실시간 갱신
+      state.totalFocusSec++;
+      updateStats(); // 탭 위치와 무관하게 매초 확실히 DOM 문자열을 갱신합니다.
     }
     updateDisplay();
   } else {
@@ -269,19 +275,28 @@ document.getElementById('btnReset').addEventListener('click', () => {
   updateDisplay();
 });
 
-// [수정] 초(s) 단위까지 시, 분, 초가 실시간으로 변하는 모종의 쾌감을 주도록 포맷 변경
+// [수정] 어떤 순간에도 유실 없이 무조건 실시간 반영 포맷팅 고정
 function updateStats() {
   const h = Math.floor(state.totalFocusSec / 3600);
   const m = Math.floor((state.totalFocusSec % 3600) / 60);
   const s = state.totalFocusSec % 60;
   
-  document.getElementById('statTotal').textContent = h + 'h ' + m + 'm ' + s + 's';
-  document.getElementById('statSessions').textContent = state.focusDone + '회';
+  const totalEl = document.getElementById('statTotal');
+  if (totalEl) {
+    totalEl.textContent = h + 'h ' + m + 'm ' + s + 's';
+  }
   
-  const logs = state.logs;
-  document.getElementById('logList').innerHTML = logs.length 
-    ? logs.slice(-8).reverse().map(l => '<div class="log-item"><span>' + l.split(' — ')[1] + '</span><span style="color:var(--color-text-secondary);">' + l.split(' — ')[0] + '</span></div>').join('') 
-    : '기록 없음';
+  const sessEl = document.getElementById('statSessions');
+  if (sessEl) {
+    sessEl.textContent = state.focusDone + '회';
+  }
+  
+  const logListEl = document.getElementById('logList');
+  if (logListEl) {
+    logListEl.innerHTML = state.logs.length 
+      ? state.logs.slice(-8).reverse().map(l => '<div class="log-item"><span>' + l.split(' — ')[1] + '</span><span style="color:var(--color-text-secondary);">' + l.split(' — ')[0] + '</span></div>').join('') 
+      : '기록 없음';
+  }
 }
 
 document.getElementById('btnClearLog').addEventListener('click', () => {
@@ -296,7 +311,8 @@ document.querySelectorAll('.mode-tab').forEach(tab => {
     ['timer','stats','settings'].forEach(p => {
       document.getElementById('panel' + p.charAt(0).toUpperCase() + p.slice(1)).style.display = tab.dataset.tab === p ? '' : 'none';
     });
-    if (tab.dataset.tab === 'stats') updateStats();
+    // 탭을 눌러 진입하는 순간에도 딜레이 없이 한 번 더 최신 데이터를 꽂아줍니다.
+    updateStats(); 
   });
 });
 
@@ -312,8 +328,9 @@ document.querySelectorAll('.num-btn').forEach(btn => {
   });
 });
 
+// 초기화 시점 강제 바인딩
 updateDisplay();
-updateStats(); // 초기 0h 0m 0s 렌더링
+updateStats();
 </script>
 </body>
 </html>
