@@ -419,8 +419,11 @@ function getAudioCtx() {
 }
 function playAlarm(type) {
   try {
-    const ctx = getAudioCtx();
-    // focus_done: 벨 3연타 | rest_done: 2음 비프 | click: 짧은 탁 소리
+    // AudioContext must be resumed after a user gesture — safe to call here
+    // because playAlarm is always triggered from a button click or timer end.
+    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    if (audioCtx.state === 'suspended') audioCtx.resume();
+    const ctx = audioCtx;
     const seqs = {
       focus_done: [{f:880,t:0,d:0.3},{f:1046,t:0.35,d:0.3},{f:1318,t:0.7,d:0.5}],
       rest_done:  [{f:660,t:0,d:0.25},{f:880,t:0.3,d:0.25}],
@@ -431,13 +434,14 @@ function playAlarm(type) {
       const osc = ctx.createOscillator(), gain = ctx.createGain();
       osc.connect(gain); gain.connect(ctx.destination);
       osc.type = type === 'click' ? 'triangle' : 'sine';
-      osc.frequency.setValueAtTime(f, ctx.currentTime+t);
-      gain.gain.setValueAtTime(0, ctx.currentTime+t);
-      gain.gain.linearRampToValueAtTime(type === 'click' ? 0.12 : 0.35, ctx.currentTime+t+0.01);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+t+d);
-      osc.start(ctx.currentTime+t); osc.stop(ctx.currentTime+t+d+0.05);
+      osc.frequency.setValueAtTime(f, ctx.currentTime + t);
+      gain.gain.setValueAtTime(0, ctx.currentTime + t);
+      gain.gain.linearRampToValueAtTime(type === 'click' ? 0.12 : 0.35, ctx.currentTime + t + 0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + d);
+      osc.start(ctx.currentTime + t);
+      osc.stop(ctx.currentTime + t + d + 0.05);
     });
-  } catch(e) {}
+  } catch(e) { console.warn('playAlarm error:', e); }
 }
 
 /* ── Helpers ── */
@@ -646,7 +650,6 @@ document.getElementById('bannerSkipBtn').addEventListener('click', () => {
 /* ── Controls ── */
 document.getElementById('btnPlay').addEventListener('click', () => {
   if (state.waiting) return;
-  try { getAudioCtx().resume(); } catch(e) {}
   playAlarm('click');
   if (state.running) {
     state.running = false;
