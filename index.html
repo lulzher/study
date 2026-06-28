@@ -47,6 +47,45 @@
   }
   .app { width: 100%; max-width: 460px; }
 
+  /* Notification permission bar */
+  .notif-bar {
+    display: none;
+    align-items: center;
+    gap: 10px;
+    background: var(--accent-light);
+    border: 0.5px solid var(--accent);
+    border-radius: var(--radius-md);
+    padding: 10px 14px;
+    margin-bottom: 1rem;
+    font-size: 13px;
+    color: var(--text-secondary);
+  }
+  .notif-bar.show { display: flex; }
+  .notif-bar i { color: var(--accent); font-size: 18px; flex-shrink: 0; }
+  .notif-bar-text { flex: 1; }
+  .notif-bar-text strong { color: var(--text-primary); }
+  .notif-allow-btn {
+    background: var(--accent);
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+    padding: 6px 14px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    font-family: inherit;
+    white-space: nowrap;
+  }
+  .notif-allow-btn:hover { opacity: 0.85; }
+  .notif-dismiss {
+    background: none; border: none;
+    color: var(--text-tertiary);
+    cursor: pointer;
+    font-size: 18px;
+    padding: 0 2px;
+    line-height: 1;
+  }
+
   /* Quote */
   .quote-box {
     background: var(--bg-primary);
@@ -56,111 +95,51 @@
     margin-bottom: 1.25rem;
     position: relative;
   }
-  .quote-text {
-    font-size: 14px;
-    color: var(--text-secondary);
-    line-height: 1.7;
-    font-style: italic;
-    padding-right: 28px;
-  }
-  .quote-author {
-    font-size: 12px;
-    color: var(--text-tertiary);
-    margin-top: 6px;
-    text-align: right;
-  }
+  .quote-text { font-size: 14px; color: var(--text-secondary); line-height: 1.7; font-style: italic; padding-right: 28px; }
+  .quote-author { font-size: 12px; color: var(--text-tertiary); margin-top: 6px; text-align: right; }
   .quote-refresh {
-    position: absolute;
-    top: 12px; right: 12px;
-    background: none; border: none;
-    cursor: pointer;
-    color: var(--text-tertiary);
-    font-size: 16px;
-    line-height: 1;
-    padding: 4px;
-    border-radius: 6px;
-    transition: color 0.15s;
+    position: absolute; top: 12px; right: 12px;
+    background: none; border: none; cursor: pointer;
+    color: var(--text-tertiary); font-size: 16px; line-height: 1;
+    padding: 4px; border-radius: 6px; transition: color 0.15s;
   }
   .quote-refresh:hover { color: var(--text-primary); }
 
   /* Tabs */
   .mode-tabs {
-    display: flex;
-    gap: 4px;
+    display: flex; gap: 4px;
     background: var(--bg-tertiary);
     border-radius: var(--radius-md);
-    padding: 4px;
-    margin-bottom: 1.25rem;
+    padding: 4px; margin-bottom: 1.25rem;
   }
   .mode-tab {
-    flex: 1;
-    text-align: center;
-    padding: 8px 0;
-    font-size: 13px;
-    border-radius: 8px;
-    cursor: pointer;
-    color: var(--text-secondary);
-    border: none;
-    background: transparent;
-    transition: all 0.15s;
-    font-family: inherit;
+    flex: 1; text-align: center; padding: 8px 0;
+    font-size: 13px; border-radius: 8px; cursor: pointer;
+    color: var(--text-secondary); border: none; background: transparent;
+    transition: all 0.15s; font-family: inherit;
   }
   .mode-tab.active {
-    background: var(--bg-primary);
-    color: var(--text-primary);
-    font-weight: 500;
-    border: 0.5px solid var(--border);
+    background: var(--bg-primary); color: var(--text-primary);
+    font-weight: 500; border: 0.5px solid var(--border);
   }
 
-  /* Timer panel */
+  /* Timer */
   .timer-display { text-align: center; margin-bottom: 1.5rem; }
-  .timer-ring-wrap {
-    display: inline-block;
-    position: relative;
-    margin-bottom: 1rem;
-  }
+  .timer-ring-wrap { display: inline-block; position: relative; margin-bottom: 1rem; }
   .timer-ring-wrap svg { display: block; }
   .timer-time {
-    position: absolute;
-    top: 50%; left: 50%;
+    position: absolute; top: 50%; left: 50%;
     transform: translate(-50%, -50%);
-    text-align: center;
-    pointer-events: none;
-    width: 140px;
+    text-align: center; pointer-events: none; width: 140px;
   }
-  .t-min {
-    font-size: 44px;
-    font-weight: 500;
-    color: var(--text-primary);
-    letter-spacing: -2px;
-    line-height: 1;
-  }
-  .t-label {
-    font-size: 12px;
-    color: var(--text-tertiary);
-    margin-top: 5px;
-    letter-spacing: 0.5px;
-  }
-  .session-label {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin-bottom: 1rem;
-  }
-  .session-dots {
-    display: flex;
-    justify-content: center;
-    gap: 6px;
-    margin-bottom: 1rem;
-  }
-  .dot {
-    width: 8px; height: 8px;
-    border-radius: 50%;
-    background: var(--border-strong);
-    transition: background 0.3s;
-  }
+  .t-min { font-size: 44px; font-weight: 500; color: var(--text-primary); letter-spacing: -2px; line-height: 1; }
+  .t-label { font-size: 12px; color: var(--text-tertiary); margin-top: 5px; letter-spacing: 0.5px; }
+  .session-label { font-size: 13px; color: var(--text-secondary); margin-bottom: 1rem; }
+  .session-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 1rem; }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border-strong); transition: background 0.3s; }
   .dot.done { background: var(--text-primary); }
 
-  /* Phase banner — shown when waiting for user to start break/focus */
+  /* Phase banner */
   .phase-banner {
     display: none;
     background: var(--accent-light);
@@ -171,145 +150,66 @@
     text-align: center;
   }
   .phase-banner.visible { display: block; }
-  .phase-banner-title {
-    font-size: 15px;
-    font-weight: 600;
-    color: var(--accent);
-    margin-bottom: 4px;
-  }
-  .phase-banner-sub {
-    font-size: 13px;
-    color: var(--text-secondary);
-    margin-bottom: 12px;
-  }
+  .phase-banner-title { font-size: 15px; font-weight: 600; color: var(--accent); margin-bottom: 4px; }
+  .phase-banner-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; }
   .phase-banner-btn {
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: var(--radius-md);
-    padding: 10px 24px;
-    font-size: 14px;
-    font-weight: 500;
-    cursor: pointer;
-    font-family: inherit;
-    transition: opacity 0.15s;
+    background: var(--accent); color: #fff; border: none;
+    border-radius: var(--radius-md); padding: 10px 24px;
+    font-size: 14px; font-weight: 500; cursor: pointer;
+    font-family: inherit; transition: opacity 0.15s;
   }
   .phase-banner-btn:hover { opacity: 0.85; }
   .phase-banner-skip {
-    background: none;
-    border: none;
-    color: var(--text-tertiary);
-    font-size: 12px;
-    cursor: pointer;
-    margin-left: 10px;
-    font-family: inherit;
-    text-decoration: underline;
+    background: none; border: none; color: var(--text-tertiary);
+    font-size: 12px; cursor: pointer; margin-left: 10px;
+    font-family: inherit; text-decoration: underline;
   }
 
   /* Controls */
-  .controls {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 14px;
-  }
+  .controls { display: flex; align-items: center; justify-content: center; gap: 14px; }
   .ctrl-btn {
-    width: 48px; height: 48px;
-    border-radius: 50%;
+    width: 48px; height: 48px; border-radius: 50%;
     border: 0.5px solid var(--border-strong);
-    background: var(--bg-primary);
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 18px;
-    color: var(--text-primary);
-    transition: all 0.15s;
+    background: var(--bg-primary); cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 18px; color: var(--text-primary); transition: all 0.15s;
   }
   .ctrl-btn:hover { background: var(--bg-secondary); }
   .ctrl-btn:active { transform: scale(0.96); }
-  .ctrl-btn.primary {
-    width: 62px; height: 62px;
-    font-size: 22px;
-    background: var(--text-primary);
-    color: var(--bg-primary);
-    border: none;
-  }
+  .ctrl-btn.primary { width: 62px; height: 62px; font-size: 22px; background: var(--text-primary); color: var(--bg-primary); border: none; }
   .ctrl-btn.primary:hover { opacity: 0.82; }
   .ctrl-btn:disabled { opacity: 0.35; cursor: default; transform: none; }
 
   /* Stats */
-  .stats-row {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
-    gap: 8px;
-    margin-bottom: 1rem;
-  }
-  .stat-card {
-    background: var(--bg-primary);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-md);
-    padding: 14px 12px;
-    text-align: center;
-  }
+  .stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 1rem; }
+  .stat-card { background: var(--bg-primary); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 14px 12px; text-align: center; }
   .stat-val { font-size: 20px; font-weight: 500; color: var(--text-primary); }
   .stat-lbl { font-size: 11px; color: var(--text-tertiary); margin-top: 3px; }
-  .log-box {
-    background: var(--bg-primary);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 1.25rem;
-    margin-bottom: 10px;
-  }
+  .log-box { background: var(--bg-primary); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 10px; }
   .log-title { font-size: 13px; font-weight: 500; margin-bottom: 10px; color: var(--text-primary); }
   .log-list { font-size: 13px; color: var(--text-tertiary); line-height: 2; }
   .log-list div { color: var(--text-secondary); }
   .clear-btn {
-    background: none;
-    border: 0.5px solid var(--border-strong);
-    border-radius: var(--radius-md);
-    padding: 8px 16px;
-    font-size: 13px;
-    color: var(--text-secondary);
-    cursor: pointer;
-    font-family: inherit;
-    display: block;
-    margin-left: auto;
-    transition: all 0.15s;
+    background: none; border: 0.5px solid var(--border-strong);
+    border-radius: var(--radius-md); padding: 8px 16px;
+    font-size: 13px; color: var(--text-secondary); cursor: pointer;
+    font-family: inherit; display: block; margin-left: auto; transition: all 0.15s;
   }
   .clear-btn:hover { background: var(--bg-primary); color: var(--text-primary); }
 
   /* Settings */
-  .settings-box {
-    background: var(--bg-primary);
-    border: 0.5px solid var(--border);
-    border-radius: var(--radius-lg);
-    padding: 0 1.25rem;
-  }
-  .setting-row {
-    display: flex;
-    align-items: center;
-    padding: 12px 0;
-    border-bottom: 0.5px solid var(--border);
-  }
+  .settings-box { background: var(--bg-primary); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 0 1.25rem; }
+  .setting-row { display: flex; align-items: center; padding: 12px 0; border-bottom: 0.5px solid var(--border); }
   .setting-row:last-child { border-bottom: none; }
   .setting-label { flex: 1; font-size: 14px; color: var(--text-primary); }
   .setting-sub { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
   .num-ctrl { display: flex; align-items: center; gap: 8px; }
   .num-btn {
-    width: 28px; height: 28px;
-    border-radius: var(--radius-md);
-    border: 0.5px solid var(--border-strong);
-    background: var(--bg-secondary);
-    cursor: pointer;
-    font-size: 16px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    color: var(--text-primary);
-    transition: all 0.15s;
-    font-family: inherit;
-    line-height: 1;
+    width: 28px; height: 28px; border-radius: var(--radius-md);
+    border: 0.5px solid var(--border-strong); background: var(--bg-secondary);
+    cursor: pointer; font-size: 16px; display: flex; align-items: center;
+    justify-content: center; color: var(--text-primary);
+    transition: all 0.15s; font-family: inherit; line-height: 1;
   }
   .num-btn:hover { background: var(--bg-tertiary); }
   .num-val { font-size: 14px; font-weight: 500; min-width: 30px; text-align: center; color: var(--text-primary); }
@@ -318,6 +218,16 @@
 </head>
 <body>
 <div class="app">
+
+  <!-- Notification permission nudge -->
+  <div class="notif-bar" id="notifBar">
+    <i class="ti ti-bell"></i>
+    <div class="notif-bar-text">
+      <strong>알림 허용하면</strong> 탭을 꺼도 타이머 끝날 때 알려드려요
+    </div>
+    <button class="notif-allow-btn" id="notifAllowBtn">허용</button>
+    <button class="notif-dismiss" id="notifDismissBtn" aria-label="닫기">✕</button>
+  </div>
 
   <div class="quote-box">
     <button class="quote-refresh" id="quoteRefreshBtn" aria-label="명언 새로 보기">
@@ -340,8 +250,7 @@
         <svg width="210" height="210" viewBox="0 0 210 210">
           <circle cx="105" cy="105" r="92" fill="none" stroke="var(--border-strong)" stroke-width="6"/>
           <circle id="progressRing" cx="105" cy="105" r="92" fill="none"
-            stroke="var(--text-primary)" stroke-width="6"
-            stroke-linecap="round"
+            stroke="var(--text-primary)" stroke-width="6" stroke-linecap="round"
             stroke-dasharray="578.05" stroke-dashoffset="0"
             transform="rotate(-90 105 105)"
             style="transition: stroke-dashoffset 0.8s ease, stroke 0.4s;"/>
@@ -355,42 +264,26 @@
       <div class="session-dots" id="sessionDots"></div>
     </div>
 
-    <!-- Phase change banner (shown when alarm fires) -->
     <div class="phase-banner" id="phaseBanner">
       <div class="phase-banner-title" id="bannerTitle">🎉 집중 완료!</div>
-      <div class="phase-banner-sub" id="bannerSub">잠깐 쉬어가세요. 준비되면 휴식을 시작하세요.</div>
+      <div class="phase-banner-sub" id="bannerSub">준비되면 휴식을 시작하세요.</div>
       <button class="phase-banner-btn" id="bannerStartBtn">휴식 시작</button>
       <button class="phase-banner-skip" id="bannerSkipBtn">건너뛰기</button>
     </div>
 
     <div class="controls">
-      <button class="ctrl-btn" id="btnReset" title="초기화">
-        <i class="ti ti-player-skip-back"></i>
-      </button>
-      <button class="ctrl-btn primary" id="btnPlay" title="시작/일시정지">
-        <i class="ti ti-player-play"></i>
-      </button>
-      <button class="ctrl-btn" id="btnSkip" title="건너뛰기">
-        <i class="ti ti-player-skip-forward"></i>
-      </button>
+      <button class="ctrl-btn" id="btnReset" title="초기화"><i class="ti ti-player-skip-back"></i></button>
+      <button class="ctrl-btn primary" id="btnPlay" title="시작/일시정지"><i class="ti ti-player-play"></i></button>
+      <button class="ctrl-btn" id="btnSkip" title="건너뛰기"><i class="ti ti-player-skip-forward"></i></button>
     </div>
   </div>
 
   <!-- Stats -->
   <div id="panelStats" style="display:none;">
     <div class="stats-row">
-      <div class="stat-card">
-        <div class="stat-val" id="statTotal">0h 0m</div>
-        <div class="stat-lbl">오늘 순공</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val" id="statSessions">0</div>
-        <div class="stat-lbl">완료 세션</div>
-      </div>
-      <div class="stat-card">
-        <div class="stat-val" id="statStreak">0</div>
-        <div class="stat-lbl">오늘 연속</div>
-      </div>
+      <div class="stat-card"><div class="stat-val" id="statTotal">0h 0m</div><div class="stat-lbl">오늘 순공</div></div>
+      <div class="stat-card"><div class="stat-val" id="statSessions">0</div><div class="stat-lbl">완료 세션</div></div>
+      <div class="stat-card"><div class="stat-val" id="statStreak">0</div><div class="stat-lbl">오늘 연속</div></div>
     </div>
     <div class="log-box">
       <div class="log-title">오늘의 집중 기록</div>
@@ -446,14 +339,14 @@
 </div>
 
 <script>
-/* ── Quotes ─────────────────────────────────────────── */
+/* ── Quotes ── */
 const quotes = [
   { text: "지금 이 순간이 당신이 가진 전부입니다. 오늘 할 수 있는 일을 내일로 미루지 마세요.", author: "마르쿠스 아우렐리우스" },
   { text: "천 리 길도 한 걸음부터.", author: "노자" },
   { text: "성공은 매일 반복되는 작은 노력들의 합입니다.", author: "로버트 콜리어" },
   { text: "당신이 할 수 있다고 생각하든, 없다고 생각하든 — 당신이 옳습니다.", author: "헨리 포드" },
   { text: "오늘 힘들고 싫어도 해야 한다면, 내일은 더 쉬워집니다.", author: "아놀드 베넷" },
-  { text: "집중은 내가 원하는 것을 말하는 것이 아니라 원하지 않는 것에 아니오라고 말하는 것입니다.", author: "스티브 잡스" },
+  { text: "집중은 원하지 않는 것에 아니오라고 말하는 것입니다.", author: "스티브 잡스" },
   { text: "우리가 두려워해야 할 것은 실패가 아니라 시작조차 하지 않는 것입니다.", author: "T.S. 엘리엇" },
   { text: "재능은 연습 없이는 아무것도 아닙니다.", author: "볼프강 모차르트" },
   { text: "불가능이란 말은 작은 사람들의 사전에나 있는 것입니다.", author: "나폴레옹 보나파르트" },
@@ -467,34 +360,58 @@ function showQuote() {
   document.getElementById('quoteText').textContent = q.text;
   document.getElementById('quoteAuthor').textContent = '— ' + q.author;
 }
-document.getElementById('quoteRefreshBtn').addEventListener('click', () => {
-  qIdx = (qIdx + 1) % quotes.length; showQuote();
-});
+document.getElementById('quoteRefreshBtn').addEventListener('click', () => { qIdx = (qIdx+1)%quotes.length; showQuote(); });
 showQuote();
 
-/* ── Config ──────────────────────────────────────────── */
+/* ── Notification permission ── */
+let notifGranted = Notification.permission === 'granted';
+
+function initNotifBar() {
+  if (Notification.permission === 'granted') { notifGranted = true; return; }
+  if (Notification.permission === 'denied') return;
+  // Show the nudge bar
+  document.getElementById('notifBar').classList.add('show');
+}
+
+document.getElementById('notifAllowBtn').addEventListener('click', async () => {
+  const perm = await Notification.requestPermission();
+  notifGranted = perm === 'granted';
+  document.getElementById('notifBar').classList.remove('show');
+});
+document.getElementById('notifDismissBtn').addEventListener('click', () => {
+  document.getElementById('notifBar').classList.remove('show');
+});
+
+function sendNotification(title, body, icon) {
+  if (!notifGranted) return;
+  try {
+    new Notification(title, {
+      body,
+      icon: icon || 'https://cdn.jsdelivr.net/npm/twemoji@14/2/svg/1f4da.svg',
+      badge: 'https://cdn.jsdelivr.net/npm/twemoji@14/2/svg/1f4da.svg',
+      tag: 'pomo-timer',          // replaces previous notification, no stack spam
+      renotify: true,
+      silent: false,
+    });
+  } catch(e) {}
+}
+
+/* ── Config ── */
 const cfg = { focus: 25, short: 5, long: 15, sessions: 4 };
-const limits = { focus: [5, 60], short: [1, 30], long: [5, 60], sessions: [2, 8] };
+const limits = { focus:[5,60], short:[1,30], long:[5,60], sessions:[2,8] };
 
-/* ── State ───────────────────────────────────────────── */
+/* ── State ── */
 let state = {
-  running: false,
-  waiting: false,      // alarm fired, waiting for user to press "시작"
-  pendingMode: null,   // next mode after user confirms
-  mode: 'focus',
-  session: 1,
+  running: false, waiting: false, pendingMode: null,
+  mode: 'focus', session: 1,
   secondsLeft: cfg.focus * 60,
-  endTime: null,       // absolute timestamp when timer should hit 0
-  rafId: null,
-  focusDone: 0,
-  totalFocusSec: 0,
-  logs: [],
-  streak: 0,
+  endTime: null, rafId: null,
+  focusDone: 0, totalFocusSec: 0, logs: [], streak: 0,
+  focusStartedAt: null,   // wall-clock when current focus session began
 };
-
 const CIRC = 2 * Math.PI * 92;
 
-/* ── Audio (Web Audio API — no file needed) ──────────── */
+/* ── Audio ── */
 let audioCtx = null;
 function getAudioCtx() {
   if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
@@ -503,277 +420,317 @@ function getAudioCtx() {
 function playAlarm(type) {
   try {
     const ctx = getAudioCtx();
-    // type: 'focus_done' = pleasant bell x3, 'rest_done' = single short beep
-    const sequences = type === 'focus_done'
-      ? [{ f: 880, t: 0, d: 0.3 }, { f: 1046, t: 0.35, d: 0.3 }, { f: 1318, t: 0.7, d: 0.5 }]
-      : [{ f: 660, t: 0, d: 0.25 }, { f: 880, t: 0.3, d: 0.25 }];
-
-    sequences.forEach(({ f, t, d }) => {
-      const osc = ctx.createOscillator();
-      const gain = ctx.createGain();
-      osc.connect(gain);
-      gain.connect(ctx.destination);
-      osc.type = 'sine';
-      osc.frequency.setValueAtTime(f, ctx.currentTime + t);
-      gain.gain.setValueAtTime(0, ctx.currentTime + t);
-      gain.gain.linearRampToValueAtTime(0.35, ctx.currentTime + t + 0.02);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + d);
-      osc.start(ctx.currentTime + t);
-      osc.stop(ctx.currentTime + t + d + 0.05);
+    // focus_done: 벨 3연타 | rest_done: 2음 비프 | click: 짧은 탁 소리
+    const seqs = {
+      focus_done: [{f:880,t:0,d:0.3},{f:1046,t:0.35,d:0.3},{f:1318,t:0.7,d:0.5}],
+      rest_done:  [{f:660,t:0,d:0.25},{f:880,t:0.3,d:0.25}],
+      click:      [{f:1100,t:0,d:0.07}],
+    };
+    const seq = seqs[type] || seqs.click;
+    seq.forEach(({f,t,d}) => {
+      const osc = ctx.createOscillator(), gain = ctx.createGain();
+      osc.connect(gain); gain.connect(ctx.destination);
+      osc.type = type === 'click' ? 'triangle' : 'sine';
+      osc.frequency.setValueAtTime(f, ctx.currentTime+t);
+      gain.gain.setValueAtTime(0, ctx.currentTime+t);
+      gain.gain.linearRampToValueAtTime(type === 'click' ? 0.12 : 0.35, ctx.currentTime+t+0.01);
+      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime+t+d);
+      osc.start(ctx.currentTime+t); osc.stop(ctx.currentTime+t+d+0.05);
     });
-  } catch (e) { /* silently fail if audio blocked */ }
+  } catch(e) {}
 }
 
-/* ── Helpers ─────────────────────────────────────────── */
+/* ── Helpers ── */
 function fmt(s) {
-  const m = Math.floor(s / 60), sec = s % 60;
-  return String(m).padStart(2, '0') + ':' + String(sec).padStart(2, '0');
+  const m = Math.floor(s/60), sec = s%60;
+  return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
 }
 function modeTotal(m) {
-  const mode = m || state.mode;
-  if (mode === 'focus') return cfg.focus * 60;
-  if (mode === 'short') return cfg.short * 60;
-  return cfg.long * 60;
+  const mode = m||state.mode;
+  if (mode==='focus') return cfg.focus*60;
+  if (mode==='short') return cfg.short*60;
+  return cfg.long*60;
 }
 function updateRing() {
-  const total = modeTotal();
-  const frac = Math.max(0, state.secondsLeft) / total;
+  const frac = Math.max(0,state.secondsLeft)/modeTotal();
   const ring = document.getElementById('progressRing');
-  ring.setAttribute('stroke-dashoffset', String(CIRC * (1 - frac)));
-  ring.style.stroke = state.mode === 'focus' ? 'var(--text-primary)' : 'var(--accent)';
+  ring.setAttribute('stroke-dashoffset', String(CIRC*(1-frac)));
+  ring.style.stroke = state.mode==='focus' ? 'var(--text-primary)' : 'var(--accent)';
 }
 function updateDots() {
   const c = document.getElementById('sessionDots');
   c.innerHTML = '';
-  for (let i = 1; i <= cfg.sessions; i++) {
+  for (let i=1; i<=cfg.sessions; i++) {
     const d = document.createElement('div');
-    d.className = 'dot' + (i < state.session ? ' done' : '');
+    d.className = 'dot'+(i<state.session?' done':'');
     c.appendChild(d);
   }
 }
 function updateDisplay() {
-  document.getElementById('timerDisplay').textContent = fmt(Math.max(0, state.secondsLeft));
-  const labels = { focus: '집중', short: '짧은 휴식', long: '긴 휴식' };
+  document.getElementById('timerDisplay').textContent = fmt(Math.max(0,state.secondsLeft));
+  const labels = {focus:'집중', short:'짧은 휴식', long:'긴 휴식'};
   document.getElementById('timerLabel').textContent = labels[state.mode];
-  document.getElementById('sessionLabel').textContent = '세션 ' + state.session + ' / ' + cfg.sessions;
-  updateRing();
-  updateDots();
-  // Sync play button icon
+  document.getElementById('sessionLabel').textContent = '세션 '+state.session+' / '+cfg.sessions;
+  updateRing(); updateDots();
   const btnPlay = document.getElementById('btnPlay');
-  btnPlay.innerHTML = state.running
-    ? '<i class="ti ti-player-pause"></i>'
-    : '<i class="ti ti-player-play"></i>';
+  btnPlay.innerHTML = state.running ? '<i class="ti ti-player-pause"></i>' : '<i class="ti ti-player-play"></i>';
   btnPlay.disabled = state.waiting;
 }
 
-/* ── Background-safe tick (requestAnimationFrame + timestamp) ── */
+/* ── Background-safe timer ── */
 function startTicking() {
   if (state.rafId) cancelAnimationFrame(state.rafId);
   state.endTime = Date.now() + state.secondsLeft * 1000;
-
-  // Also store in localStorage so we can recover if page is backgrounded hard
-  localStorage.setItem('pomo_endTime', state.endTime);
-  localStorage.setItem('pomo_mode', state.mode);
-
+  scheduleNotifTimeout();
   function tick() {
     if (!state.running) return;
     const remaining = Math.round((state.endTime - Date.now()) / 1000);
     state.secondsLeft = Math.max(0, remaining);
     updateDisplay();
-    if (state.secondsLeft <= 0) {
-      stopTicking();
-      onTimerDone();
-    } else {
-      state.rafId = requestAnimationFrame(tick);
-    }
+    if (state.secondsLeft <= 0) { stopTicking(); onTimerDone(); }
+    else state.rafId = requestAnimationFrame(tick);
   }
   state.rafId = requestAnimationFrame(tick);
 }
 function stopTicking() {
   if (state.rafId) { cancelAnimationFrame(state.rafId); state.rafId = null; }
-  localStorage.removeItem('pomo_endTime');
-  localStorage.removeItem('pomo_mode');
+  clearNotifTimeout();
 }
 
-/* ── Page visibility: recover when tab comes back ─────── */
-document.addEventListener('visibilitychange', () => {
-  if (document.visibilityState === 'visible' && state.running) {
-    // Re-derive secondsLeft from absolute endTime (handles backgrounded tabs)
-    const remaining = Math.round((state.endTime - Date.now()) / 1000);
-    if (remaining <= 0) {
+// setTimeout-based notification fallback (fires even if tab is backgrounded on desktop)
+let notifTimeoutId = null;
+function scheduleNotifTimeout() {
+  clearNotifTimeout();
+  const msLeft = state.endTime - Date.now();
+  if (msLeft < 0) return;
+  notifTimeoutId = setTimeout(() => {
+    // If the RAF loop already fired onTimerDone this will be a no-op because
+    // we clear this id inside stopTicking which is called before onTimerDone.
+    // But on mobile where RAF is throttled, this setTimeout fires first.
+    if (state.running) {
+      state.running = false;
       state.secondsLeft = 0;
       stopTicking();
       onTimerDone();
-    } else {
-      state.secondsLeft = remaining;
-      startTicking(); // restart RAF loop
     }
+  }, msLeft + 300); // +300ms grace
+}
+function clearNotifTimeout() {
+  if (notifTimeoutId) { clearTimeout(notifTimeoutId); notifTimeoutId = null; }
+}
+
+/* ── Page visibility sync ── */
+// When tab hides: pause the endTime (so hidden time is NOT counted as study time).
+// When tab shows: shift endTime forward by the hidden duration, then resume.
+let hiddenAt = null;
+
+document.addEventListener('visibilitychange', () => {
+  if (document.visibilityState === 'hidden') {
+    // Tab going away — record when
+    if (state.running) {
+      hiddenAt = Date.now();
+      // Cancel RAF (it'll be throttled anyway); setTimeout alarm still lives
+      if (state.rafId) { cancelAnimationFrame(state.rafId); state.rafId = null; }
+    }
+  } else {
+    // Tab coming back
+    if (state.running && hiddenAt !== null) {
+      const hiddenMs = Date.now() - hiddenAt;
+      hiddenAt = null;
+      // Shift endTime forward → hidden time excluded from countdown
+      state.endTime += hiddenMs;
+      // Also push the scheduled notification timeout forward
+      clearNotifTimeout();
+      scheduleNotifTimeout();
+      // Check if timer would have naturally ended while hidden
+      const remaining = Math.round((state.endTime - Date.now()) / 1000);
+      if (remaining <= 0) {
+        state.secondsLeft = 0; stopTicking(); onTimerDone();
+      } else {
+        state.secondsLeft = remaining; startTicking();
+      }
+    }
+    hiddenAt = null;
   }
 });
 
-/* ── Phase logic ─────────────────────────────────────── */
+/* ── Phase logic ── */
 function onTimerDone() {
   state.running = false;
-
   if (state.mode === 'focus') {
-    // Log the completed focus session
+    // Actual seconds spent focusing (excludes hidden/backgrounded time)
+    const elapsed = state.focusStartedAt
+      ? Math.round((Date.now() - state.focusStartedAt) / 1000)
+      : 0;
+    const actualSec = (state._focusElapsedBeforePause || 0) + elapsed;
+    state._focusElapsedBeforePause = 0;
     state.focusDone++;
-    state.totalFocusSec += cfg.focus * 60;
+    state.totalFocusSec += actualSec;
     state.streak++;
+    state.focusStartedAt = null;  // reset for next session
     const now = new Date();
-    const time = now.getHours() + ':' + String(now.getMinutes()).padStart(2, '0');
-    state.logs.push(time + ' — 집중 ' + cfg.focus + '분 완료');
+    const time = now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
+    const mins = Math.floor(actualSec/60);
+    state.logs.push(time+' — 집중 '+mins+'분 완료');
     updateStats();
-
-    // Decide next rest type
     const nextMode = (state.focusDone % cfg.sessions === 0) ? 'long' : 'short';
+    const restMins = nextMode === 'long' ? cfg.long : cfg.short;
     playAlarm('focus_done');
+    // Push notification — shows even if tab is backgrounded
+    sendNotification(
+      '🎉 집중 완료! ' + cfg.focus + '분',
+      restMins + '분 휴식할 시간이에요. 앱으로 돌아와서 휴식을 시작하세요.',
+    );
     showBanner('focus_done', nextMode);
   } else {
-    // Rest ended
     playAlarm('rest_done');
+    sendNotification(
+      '☕ 휴식 끝!',
+      '다시 집중할 시간이에요. 파이팅! 💪',
+    );
     showBanner('rest_done', 'focus');
   }
   updateDisplay();
 }
 
 function showBanner(type, nextMode) {
-  state.waiting = true;
-  state.pendingMode = nextMode;
-
-  const banner = document.getElementById('phaseBanner');
+  state.waiting = true; state.pendingMode = nextMode;
   const title = document.getElementById('bannerTitle');
   const sub = document.getElementById('bannerSub');
   const startBtn = document.getElementById('bannerStartBtn');
-
   if (type === 'focus_done') {
     const mins = nextMode === 'long' ? cfg.long : cfg.short;
     title.textContent = '🎉 집중 완료!';
-    sub.textContent = '수고했어요! 준비되면 ' + mins + '분 휴식을 시작하세요.';
-    startBtn.textContent = '휴식 시작 ' + mins + '분';
+    sub.textContent = '수고했어요! 준비되면 '+mins+'분 휴식을 시작하세요.';
+    startBtn.textContent = '휴식 시작 '+mins+'분';
   } else {
     title.textContent = '☕ 휴식 끝!';
     sub.textContent = '다시 집중할 준비가 됐나요?';
-    startBtn.textContent = '집중 시작 ' + cfg.focus + '분';
+    startBtn.textContent = '집중 시작 '+cfg.focus+'분';
   }
-  banner.classList.add('visible');
+  document.getElementById('phaseBanner').classList.add('visible');
   updateDisplay();
 }
-
 function hideBanner() {
   document.getElementById('phaseBanner').classList.remove('visible');
   state.waiting = false;
 }
-
 function commitNextPhase() {
   hideBanner();
   const next = state.pendingMode;
   if (next !== 'focus') {
-    // Advance session counter only when transitioning from focus->rest
-    state.session = (state.focusDone % cfg.sessions === 0) ? 1 : Math.min(state.session + 1, cfg.sessions);
+    state.session = (state.focusDone % cfg.sessions === 0) ? 1 : Math.min(state.session+1, cfg.sessions);
   }
   state.mode = next;
   state.secondsLeft = modeTotal(next);
-  updateDisplay();
-  // Auto-start the next phase
+  state.focusStartedAt = (next === 'focus') ? Date.now() : null;
+  state._focusElapsedBeforePause = 0;
   state.running = true;
   startTicking();
 }
 
-document.getElementById('bannerStartBtn').addEventListener('click', commitNextPhase);
+document.getElementById('bannerStartBtn').addEventListener('click', () => {
+  playAlarm('click');
+  commitNextPhase();
+});
 document.getElementById('bannerSkipBtn').addEventListener('click', () => {
+  playAlarm('click');
   hideBanner();
-  // Skip: go to next phase but don't auto-start
   const next = state.pendingMode;
-  if (next !== 'focus') {
-    state.session = (state.focusDone % cfg.sessions === 0) ? 1 : Math.min(state.session + 1, cfg.sessions);
-  }
+  if (next !== 'focus') state.session = (state.focusDone % cfg.sessions === 0) ? 1 : Math.min(state.session+1, cfg.sessions);
   state.mode = next;
   state.secondsLeft = modeTotal(next);
   updateDisplay();
 });
 
-/* ── Play / Pause / Reset / Skip ────────────────────── */
-const btnPlay = document.getElementById('btnPlay');
-function togglePlay() {
+/* ── Controls ── */
+document.getElementById('btnPlay').addEventListener('click', () => {
   if (state.waiting) return;
-  // Unlock audio context on first user interaction
   try { getAudioCtx().resume(); } catch(e) {}
-
+  playAlarm('click');
   if (state.running) {
     state.running = false;
     stopTicking();
+    // When paused: record how much focus time was accumulated so far
+    // by shifting focusStartedAt forward by pause duration (handled on resume)
+    if (state.mode === 'focus' && state.focusStartedAt !== null) {
+      // Snap: store net elapsed so far, reset start for when resumed
+      const elapsed = Math.round((Date.now() - state.focusStartedAt) / 1000);
+      state._focusElapsedBeforePause = (state._focusElapsedBeforePause || 0) + elapsed;
+      state.focusStartedAt = null;
+    }
   } else {
     state.running = true;
+    // Resume: restart focusStartedAt fresh (accumulated in _focusElapsedBeforePause)
+    if (state.mode === 'focus') state.focusStartedAt = Date.now();
     startTicking();
   }
   updateDisplay();
-}
-btnPlay.addEventListener('click', togglePlay);
-
+});
 document.getElementById('btnReset').addEventListener('click', () => {
-  state.running = false;
-  state.waiting = false;
-  stopTicking();
-  hideBanner();
-  state.mode = 'focus';
-  state.session = 1;
+  playAlarm('click');
+  state.running = false; state.waiting = false;
+  stopTicking(); hideBanner();
+  state.mode = 'focus'; state.session = 1;
   state.secondsLeft = cfg.focus * 60;
+  state.focusStartedAt = null;
+  state._focusElapsedBeforePause = 0;
+  hiddenAt = null;
   updateDisplay();
 });
-
 document.getElementById('btnSkip').addEventListener('click', () => {
+  playAlarm('click');
   if (state.waiting) { commitNextPhase(); return; }
-  state.running = false;
-  stopTicking();
-  onTimerDone();
+  state.running = false; stopTicking(); onTimerDone();
 });
 
-/* ── Stats ───────────────────────────────────────────── */
+/* ── Stats ── */
 function updateStats() {
-  const h = Math.floor(state.totalFocusSec / 3600);
-  const m = Math.floor((state.totalFocusSec % 3600) / 60);
-  document.getElementById('statTotal').textContent = h + 'h ' + m + 'm';
+  const h = Math.floor(state.totalFocusSec/3600);
+  const m = Math.floor((state.totalFocusSec%3600)/60);
+  document.getElementById('statTotal').textContent = h+'h '+m+'m';
   document.getElementById('statSessions').textContent = state.focusDone;
   document.getElementById('statStreak').textContent = state.streak;
   const el = document.getElementById('logList');
-  el.innerHTML = state.logs.length
-    ? state.logs.slice().reverse().slice(0, 10).map(l => '<div>' + l + '</div>').join('')
-    : '기록 없음';
+  if (el) {
+    el.innerHTML = state.logs.length
+      ? state.logs.slice().reverse().slice(0,10).map(l=>'<div>'+l+'</div>').join('')
+      : '기록 없음';
+  }
 }
 document.getElementById('btnClearLog').addEventListener('click', () => {
-  state.logs = []; state.totalFocusSec = 0; state.focusDone = 0; state.streak = 0;
+  state.logs=[]; state.totalFocusSec=0; state.focusDone=0; state.streak=0;
   updateStats();
 });
 
-/* ── Tabs ────────────────────────────────────────────── */
+/* ── Tabs ── */
 document.querySelectorAll('.mode-tab').forEach(tab => {
   tab.addEventListener('click', () => {
-    document.querySelectorAll('.mode-tab').forEach(t => t.classList.remove('active'));
+    document.querySelectorAll('.mode-tab').forEach(t=>t.classList.remove('active'));
     tab.classList.add('active');
-    const panels = { timer: 'panelTimer', stats: 'panelStats', settings: 'panelSettings' };
-    Object.entries(panels).forEach(([key, id]) => {
-      document.getElementById(id).style.display = tab.dataset.tab === key ? '' : 'none';
+    ['timer','stats','settings'].forEach(k => {
+      document.getElementById('panel'+k.charAt(0).toUpperCase()+k.slice(1)).style.display = tab.dataset.tab===k?'':'none';
     });
-    if (tab.dataset.tab === 'stats') updateStats();
+    if (tab.dataset.tab==='stats') updateStats();
   });
 });
 
-/* ── Settings ────────────────────────────────────────── */
+/* ── Settings ── */
 document.querySelectorAll('.num-btn').forEach(btn => {
   btn.addEventListener('click', () => {
-    const key = btn.dataset.key, dir = parseInt(btn.dataset.dir);
-    const [mn, mx] = limits[key];
-    cfg[key] = Math.min(mx, Math.max(mn, cfg[key] + dir));
-    const ids = { focus: 'setFocus', short: 'setShort', long: 'setLong', sessions: 'setSessions' };
-    document.getElementById(ids[key]).textContent = cfg[key];
-    if (!state.running) { state.secondsLeft = modeTotal(); updateDisplay(); }
+    const key=btn.dataset.key, dir=parseInt(btn.dataset.dir);
+    const [mn,mx]=limits[key];
+    cfg[key]=Math.min(mx,Math.max(mn,cfg[key]+dir));
+    const ids={focus:'setFocus',short:'setShort',long:'setLong',sessions:'setSessions'};
+    document.getElementById(ids[key]).textContent=cfg[key];
+    if (!state.running) { state.secondsLeft=modeTotal(); updateDisplay(); }
   });
 });
 
-/* ── Init ────────────────────────────────────────────── */
+/* ── Init ── */
 updateDisplay();
 updateStats();
+initNotifBar();
 </script>
 </body>
 </html>
