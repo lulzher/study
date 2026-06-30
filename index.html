@@ -6,734 +6,541 @@
 <title>공부 집중 타이머</title>
 <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@2.44.0/tabler-icons.min.css">
 <style>
-  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
-  :root {
-    --bg-primary: #ffffff;
-    --bg-secondary: #f5f5f7;
-    --bg-tertiary: #e8e8ed;
-    --text-primary: #1d1d1f;
-    --text-secondary: #6e6e73;
-    --text-tertiary: #aeaeb2;
-    --border: rgba(0,0,0,0.1);
-    --border-strong: rgba(0,0,0,0.18);
-    --radius-md: 10px;
-    --radius-lg: 16px;
-    --accent: #0071e3;
-    --accent-light: #e8f0fb;
-  }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg-primary: #1c1c1e;
-      --bg-secondary: #2c2c2e;
-      --bg-tertiary: #3a3a3c;
-      --text-primary: #f5f5f7;
-      --text-secondary: #aeaeb2;
-      --text-tertiary: #636366;
-      --border: rgba(255,255,255,0.1);
-      --border-strong: rgba(255,255,255,0.18);
-      --accent: #2997ff;
-      --accent-light: #1a2a3a;
-    }
-  }
-  body {
-    font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Text', 'Segoe UI', sans-serif;
-    background: var(--bg-secondary);
-    color: var(--text-primary);
-    min-height: 100vh;
-    display: flex;
-    align-items: flex-start;
-    justify-content: center;
-    padding: 2rem 1rem 4rem;
-  }
-  .app { width: 100%; max-width: 460px; }
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --bg1:#fff;--bg2:#f5f5f7;--bg3:#e8e8ed;
+  --t1:#1d1d1f;--t2:#6e6e73;--t3:#aeaeb2;
+  --bd:rgba(0,0,0,.1);--bds:rgba(0,0,0,.18);
+  --r1:10px;--r2:16px;
+  --ac:#0071e3;--acl:#e8f0fb;
+}
+@media(prefers-color-scheme:dark){:root{
+  --bg1:#1c1c1e;--bg2:#2c2c2e;--bg3:#3a3a3c;
+  --t1:#f5f5f7;--t2:#aeaeb2;--t3:#636366;
+  --bd:rgba(255,255,255,.1);--bds:rgba(255,255,255,.18);
+  --ac:#2997ff;--acl:#1a2a3a;
+}}
+body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-serif;background:var(--bg2);color:var(--t1);min-height:100vh;display:flex;align-items:flex-start;justify-content:center;padding:2rem 1rem 4rem}
+.app{width:100%;max-width:460px}
 
-  /* Notification permission bar */
-  .notif-bar {
-    display: none;
-    align-items: center;
-    gap: 10px;
-    background: var(--accent-light);
-    border: 0.5px solid var(--accent);
-    border-radius: var(--radius-md);
-    padding: 10px 14px;
-    margin-bottom: 1rem;
-    font-size: 13px;
-    color: var(--text-secondary);
-  }
-  .notif-bar.show { display: flex; }
-  .notif-bar i { color: var(--accent); font-size: 18px; flex-shrink: 0; }
-  .notif-bar-text { flex: 1; }
-  .notif-bar-text strong { color: var(--text-primary); }
-  .notif-allow-btn {
-    background: var(--accent);
-    color: #fff;
-    border: none;
-    border-radius: 8px;
-    padding: 6px 14px;
-    font-size: 13px;
-    font-weight: 500;
-    cursor: pointer;
-    font-family: inherit;
-    white-space: nowrap;
-  }
-  .notif-allow-btn:hover { opacity: 0.85; }
-  .notif-dismiss {
-    background: none; border: none;
-    color: var(--text-tertiary);
-    cursor: pointer;
-    font-size: 18px;
-    padding: 0 2px;
-    line-height: 1;
-  }
+/* notif bar */
+.nbar{display:none;align-items:center;gap:10px;background:var(--acl);border:.5px solid var(--ac);border-radius:var(--r1);padding:10px 14px;margin-bottom:1rem;font-size:13px;color:var(--t2)}
+.nbar.show{display:flex}
+.nbar i{color:var(--ac);font-size:18px;flex-shrink:0}
+.nbar-text{flex:1}.nbar-text strong{color:var(--t1)}
+.nbar-allow{background:var(--ac);color:#fff;border:none;border-radius:8px;padding:6px 14px;font-size:13px;font-weight:500;cursor:pointer;font-family:inherit;white-space:nowrap;-webkit-tap-highlight-color:transparent}
+.nbar-allow:active{opacity:.75}
+.nbar-x{background:none;border:none;color:var(--t3);cursor:pointer;font-size:18px;padding:0 2px;line-height:1;-webkit-tap-highlight-color:transparent}
 
-  /* Quote */
-  .quote-box {
-    background: var(--bg-primary);
-    border-radius: var(--radius-lg);
-    border: 0.5px solid var(--border);
-    padding: 1.25rem 1.5rem;
-    margin-bottom: 1.25rem;
-    position: relative;
-  }
-  .quote-text { font-size: 14px; color: var(--text-secondary); line-height: 1.7; font-style: italic; padding-right: 28px; }
-  .quote-author { font-size: 12px; color: var(--text-tertiary); margin-top: 6px; text-align: right; }
-  .quote-refresh {
-    position: absolute; top: 12px; right: 12px;
-    background: none; border: none; cursor: pointer;
-    color: var(--text-tertiary); font-size: 16px; line-height: 1;
-    padding: 4px; border-radius: 6px; transition: color 0.15s;
-  }
-  .quote-refresh:hover { color: var(--text-primary); }
+/* quote */
+.qbox{background:var(--bg1);border-radius:var(--r2);border:.5px solid var(--bd);padding:1.25rem 1.5rem;margin-bottom:1.25rem;position:relative}
+.qtext{font-size:14px;color:var(--t2);line-height:1.7;font-style:italic;padding-right:28px}
+.qauthor{font-size:12px;color:var(--t3);margin-top:6px;text-align:right}
+.qrefresh{position:absolute;top:12px;right:12px;background:none;border:none;cursor:pointer;color:var(--t3);font-size:16px;line-height:1;padding:8px;border-radius:6px;-webkit-tap-highlight-color:transparent}
+.qrefresh:active{color:var(--t1)}
 
-  /* Tabs */
-  .mode-tabs {
-    display: flex; gap: 4px;
-    background: var(--bg-tertiary);
-    border-radius: var(--radius-md);
-    padding: 4px; margin-bottom: 1.25rem;
-  }
-  .mode-tab {
-    flex: 1; text-align: center; padding: 8px 0;
-    font-size: 13px; border-radius: 8px; cursor: pointer;
-    color: var(--text-secondary); border: none; background: transparent;
-    transition: all 0.15s; font-family: inherit;
-  }
-  .mode-tab.active {
-    background: var(--bg-primary); color: var(--text-primary);
-    font-weight: 500; border: 0.5px solid var(--border);
-  }
+/* tabs */
+.tabs{display:flex;gap:4px;background:var(--bg3);border-radius:var(--r1);padding:4px;margin-bottom:1.25rem}
+.tab{flex:1;text-align:center;padding:9px 0;font-size:13px;border-radius:8px;cursor:pointer;color:var(--t2);border:none;background:transparent;transition:all .15s;font-family:inherit;-webkit-tap-highlight-color:transparent}
+.tab.on{background:var(--bg1);color:var(--t1);font-weight:500;border:.5px solid var(--bd)}
+.tab:active{opacity:.7}
 
-  /* Timer */
-  .timer-display { text-align: center; margin-bottom: 1.5rem; }
-  .timer-ring-wrap { display: inline-block; position: relative; margin-bottom: 1rem; }
-  .timer-ring-wrap svg { display: block; }
-  .timer-time {
-    position: absolute; top: 50%; left: 50%;
-    transform: translate(-50%, -50%);
-    text-align: center; pointer-events: none; width: 140px;
-  }
-  .t-min { font-size: 44px; font-weight: 500; color: var(--text-primary); letter-spacing: -2px; line-height: 1; }
-  .t-label { font-size: 12px; color: var(--text-tertiary); margin-top: 5px; letter-spacing: 0.5px; }
-  .session-label { font-size: 13px; color: var(--text-secondary); margin-bottom: 1rem; }
-  .session-dots { display: flex; justify-content: center; gap: 6px; margin-bottom: 1rem; }
-  .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--border-strong); transition: background 0.3s; }
-  .dot.done { background: var(--text-primary); }
+/* timer */
+.tdisp{text-align:center;margin-bottom:1.5rem}
+.ring-wrap{display:inline-block;position:relative;margin-bottom:1rem}
+.ring-wrap svg{display:block}
+.ttime{position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);text-align:center;pointer-events:none;width:140px}
+.tmin{font-size:44px;font-weight:500;color:var(--t1);letter-spacing:-2px;line-height:1}
+.tlbl{font-size:12px;color:var(--t3);margin-top:5px;letter-spacing:.5px}
+.slbl{font-size:13px;color:var(--t2);margin-bottom:1rem}
+.dots{display:flex;justify-content:center;gap:6px;margin-bottom:1rem}
+.dot{width:8px;height:8px;border-radius:50%;background:var(--bds);transition:background .3s}
+.dot.on{background:var(--t1)}
 
-  /* Phase banner */
-  .phase-banner {
-    display: none;
-    background: var(--accent-light);
-    border: 0.5px solid var(--accent);
-    border-radius: var(--radius-md);
-    padding: 14px 16px;
-    margin-bottom: 1.25rem;
-    text-align: center;
-  }
-  .phase-banner.visible { display: block; }
-  .phase-banner-title { font-size: 15px; font-weight: 600; color: var(--accent); margin-bottom: 4px; }
-  .phase-banner-sub { font-size: 13px; color: var(--text-secondary); margin-bottom: 12px; }
-  .phase-banner-btn {
-    background: var(--accent); color: #fff; border: none;
-    border-radius: var(--radius-md); padding: 10px 24px;
-    font-size: 14px; font-weight: 500; cursor: pointer;
-    font-family: inherit; transition: opacity 0.15s;
-  }
-  .phase-banner-btn:hover { opacity: 0.85; }
-  .phase-banner-skip {
-    background: none; border: none; color: var(--text-tertiary);
-    font-size: 12px; cursor: pointer; margin-left: 10px;
-    font-family: inherit; text-decoration: underline;
-  }
+/* banner */
+.banner{display:none;background:var(--acl);border:.5px solid var(--ac);border-radius:var(--r1);padding:14px 16px;margin-bottom:1.25rem;text-align:center}
+.banner.show{display:block}
+.btitle{font-size:15px;font-weight:600;color:var(--ac);margin-bottom:4px}
+.bsub{font-size:13px;color:var(--t2);margin-bottom:12px}
+.bstart{background:var(--ac);color:#fff;border:none;border-radius:var(--r1);padding:11px 26px;font-size:14px;font-weight:500;cursor:pointer;font-family:inherit;-webkit-tap-highlight-color:transparent}
+.bstart:active{opacity:.75}
+.bskip{background:none;border:none;color:var(--t3);font-size:12px;cursor:pointer;margin-left:10px;font-family:inherit;text-decoration:underline;-webkit-tap-highlight-color:transparent}
+.bskip:active{opacity:.6}
 
-  /* Controls */
-  .controls { display: flex; align-items: center; justify-content: center; gap: 14px; }
-  .ctrl-btn {
-    width: 48px; height: 48px; border-radius: 50%;
-    border: 0.5px solid var(--border-strong);
-    background: var(--bg-primary); cursor: pointer;
-    display: flex; align-items: center; justify-content: center;
-    font-size: 18px; color: var(--text-primary); transition: all 0.15s;
-  }
-  .ctrl-btn:hover { background: var(--bg-secondary); }
-  .ctrl-btn:active { transform: scale(0.96); }
-  .ctrl-btn.primary { width: 62px; height: 62px; font-size: 22px; background: var(--text-primary); color: var(--bg-primary); border: none; }
-  .ctrl-btn.primary:hover { opacity: 0.82; }
-  .ctrl-btn:disabled { opacity: 0.35; cursor: default; transform: none; }
+/* controls */
+.ctrls{display:flex;align-items:center;justify-content:center;gap:14px}
+.cbtn{width:50px;height:50px;border-radius:50%;border:.5px solid var(--bds);background:var(--bg1);cursor:pointer;display:flex;align-items:center;justify-content:center;font-size:19px;color:var(--t1);-webkit-tap-highlight-color:transparent;transition:opacity .15s}
+.cbtn:active{opacity:.55}
+.cbtn.big{width:64px;height:64px;font-size:23px;background:var(--t1);color:var(--bg1);border:none}
+.cbtn:disabled{opacity:.3;pointer-events:none}
 
-  /* Stats */
-  .stats-row { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 8px; margin-bottom: 1rem; }
-  .stat-card { background: var(--bg-primary); border: 0.5px solid var(--border); border-radius: var(--radius-md); padding: 14px 12px; text-align: center; }
-  .stat-val { font-size: 20px; font-weight: 500; color: var(--text-primary); }
-  .stat-lbl { font-size: 11px; color: var(--text-tertiary); margin-top: 3px; }
-  .log-box { background: var(--bg-primary); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 1.25rem; margin-bottom: 10px; }
-  .log-title { font-size: 13px; font-weight: 500; margin-bottom: 10px; color: var(--text-primary); }
-  .log-list { font-size: 13px; color: var(--text-tertiary); line-height: 2; }
-  .log-list div { color: var(--text-secondary); }
-  .clear-btn {
-    background: none; border: 0.5px solid var(--border-strong);
-    border-radius: var(--radius-md); padding: 8px 16px;
-    font-size: 13px; color: var(--text-secondary); cursor: pointer;
-    font-family: inherit; display: block; margin-left: auto; transition: all 0.15s;
-  }
-  .clear-btn:hover { background: var(--bg-primary); color: var(--text-primary); }
+/* stats */
+.srow{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px;margin-bottom:1rem}
+.scard{background:var(--bg1);border:.5px solid var(--bd);border-radius:var(--r1);padding:14px 12px;text-align:center}
+.sval{font-size:20px;font-weight:500;color:var(--t1)}
+.slb{font-size:11px;color:var(--t3);margin-top:3px}
+.logbox{background:var(--bg1);border:.5px solid var(--bd);border-radius:var(--r2);padding:1.25rem;margin-bottom:10px}
+.logtitle{font-size:13px;font-weight:500;margin-bottom:10px;color:var(--t1)}
+.loglist{font-size:13px;color:var(--t3);line-height:2}
+.loglist div{color:var(--t2)}
+.clrbtn{background:none;border:.5px solid var(--bds);border-radius:var(--r1);padding:8px 16px;font-size:13px;color:var(--t2);cursor:pointer;font-family:inherit;display:block;margin-left:auto;-webkit-tap-highlight-color:transparent}
+.clrbtn:active{opacity:.6}
 
-  /* Settings */
-  .settings-box { background: var(--bg-primary); border: 0.5px solid var(--border); border-radius: var(--radius-lg); padding: 0 1.25rem; }
-  .setting-row { display: flex; align-items: center; padding: 12px 0; border-bottom: 0.5px solid var(--border); }
-  .setting-row:last-child { border-bottom: none; }
-  .setting-label { flex: 1; font-size: 14px; color: var(--text-primary); }
-  .setting-sub { font-size: 12px; color: var(--text-tertiary); margin-top: 2px; }
-  .num-ctrl { display: flex; align-items: center; gap: 8px; }
-  .num-btn {
-    width: 28px; height: 28px; border-radius: var(--radius-md);
-    border: 0.5px solid var(--border-strong); background: var(--bg-secondary);
-    cursor: pointer; font-size: 16px; display: flex; align-items: center;
-    justify-content: center; color: var(--text-primary);
-    transition: all 0.15s; font-family: inherit; line-height: 1;
-  }
-  .num-btn:hover { background: var(--bg-tertiary); }
-  .num-val { font-size: 14px; font-weight: 500; min-width: 30px; text-align: center; color: var(--text-primary); }
-  .unit { font-size: 12px; color: var(--text-tertiary); }
+/* settings */
+.setbox{background:var(--bg1);border:.5px solid var(--bd);border-radius:var(--r2);padding:0 1.25rem}
+.setrow{display:flex;align-items:center;padding:12px 0;border-bottom:.5px solid var(--bd)}
+.setrow:last-child{border-bottom:none}
+.setlbl{flex:1;font-size:14px;color:var(--t1)}
+.setsub{font-size:12px;color:var(--t3);margin-top:2px}
+.numctl{display:flex;align-items:center;gap:8px}
+.nbtn{width:32px;height:32px;border-radius:var(--r1);border:.5px solid var(--bds);background:var(--bg2);cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;color:var(--t1);font-family:inherit;line-height:1;-webkit-tap-highlight-color:transparent}
+.nbtn:active{opacity:.55}
+.nval{font-size:14px;font-weight:500;min-width:30px;text-align:center;color:var(--t1)}
+.unit{font-size:12px;color:var(--t3)}
 </style>
 </head>
 <body>
 <div class="app">
 
-  <!-- Notification permission nudge -->
-  <div class="notif-bar" id="notifBar">
+  <div class="nbar" id="nbar">
     <i class="ti ti-bell"></i>
-    <div class="notif-bar-text">
-      <strong>알림 허용하면</strong> 탭을 꺼도 타이머 끝날 때 알려드려요
-    </div>
-    <button class="notif-allow-btn" id="notifAllowBtn">허용</button>
-    <button class="notif-dismiss" id="notifDismissBtn" aria-label="닫기">✕</button>
+    <div class="nbar-text"><strong>알림 허용</strong>하면 탭 꺼도 알려드려요</div>
+    <button class="nbar-allow" id="nbarAllow">허용</button>
+    <button class="nbar-x" id="nbarX">✕</button>
   </div>
 
-  <div class="quote-box">
-    <button class="quote-refresh" id="quoteRefreshBtn" aria-label="명언 새로 보기">
-      <i class="ti ti-refresh"></i>
-    </button>
-    <p class="quote-text" id="quoteText"></p>
-    <p class="quote-author" id="quoteAuthor"></p>
+  <div class="qbox">
+    <button class="qrefresh" id="qrefresh"><i class="ti ti-refresh"></i></button>
+    <p class="qtext" id="qtext"></p>
+    <p class="qauthor" id="qauthor"></p>
   </div>
 
-  <div class="mode-tabs">
-    <button class="mode-tab active" data-tab="timer">타이머</button>
-    <button class="mode-tab" data-tab="stats">순공시간</button>
-    <button class="mode-tab" data-tab="settings">설정</button>
+  <div class="tabs">
+    <button class="tab on" data-tab="timer">타이머</button>
+    <button class="tab" data-tab="stats">순공시간</button>
+    <button class="tab" data-tab="settings">설정</button>
   </div>
 
-  <!-- Timer -->
-  <div id="panelTimer">
-    <div class="timer-display">
-      <div class="timer-ring-wrap">
+  <div id="pTimer">
+    <div class="tdisp">
+      <div class="ring-wrap">
         <svg width="210" height="210" viewBox="0 0 210 210">
-          <circle cx="105" cy="105" r="92" fill="none" stroke="var(--border-strong)" stroke-width="6"/>
-          <circle id="progressRing" cx="105" cy="105" r="92" fill="none"
-            stroke="var(--text-primary)" stroke-width="6" stroke-linecap="round"
+          <circle cx="105" cy="105" r="92" fill="none" stroke="var(--bds)" stroke-width="6"/>
+          <circle id="ring" cx="105" cy="105" r="92" fill="none"
+            stroke="var(--t1)" stroke-width="6" stroke-linecap="round"
             stroke-dasharray="578.05" stroke-dashoffset="0"
             transform="rotate(-90 105 105)"
-            style="transition: stroke-dashoffset 0.8s ease, stroke 0.4s;"/>
+            style="transition:stroke-dashoffset .8s ease,stroke .4s"/>
         </svg>
-        <div class="timer-time">
-          <div class="t-min" id="timerDisplay">25:00</div>
-          <div class="t-label" id="timerLabel">집중</div>
+        <div class="ttime">
+          <div class="tmin" id="tdisp">25:00</div>
+          <div class="tlbl" id="tlbl">집중</div>
         </div>
       </div>
-      <div class="session-label" id="sessionLabel">세션 1 / 4</div>
-      <div class="session-dots" id="sessionDots"></div>
+      <div class="slbl" id="slbl">세션 1 / 4</div>
+      <div class="dots" id="dots"></div>
     </div>
 
-    <div class="phase-banner" id="phaseBanner">
-      <div class="phase-banner-title" id="bannerTitle">🎉 집중 완료!</div>
-      <div class="phase-banner-sub" id="bannerSub">준비되면 휴식을 시작하세요.</div>
-      <button class="phase-banner-btn" id="bannerStartBtn">휴식 시작</button>
-      <button class="phase-banner-skip" id="bannerSkipBtn">건너뛰기</button>
+    <div class="banner" id="banner">
+      <div class="btitle" id="btitle">🎉 집중 완료!</div>
+      <div class="bsub" id="bsub">준비되면 휴식을 시작하세요.</div>
+      <button class="bstart" id="bstart">휴식 시작</button>
+      <button class="bskip" id="bskip">건너뛰기</button>
     </div>
 
-    <div class="controls">
-      <button class="ctrl-btn" id="btnReset" title="초기화"><i class="ti ti-player-skip-back"></i></button>
-      <button class="ctrl-btn primary" id="btnPlay" title="시작/일시정지"><i class="ti ti-player-play"></i></button>
-      <button class="ctrl-btn" id="btnSkip" title="건너뛰기"><i class="ti ti-player-skip-forward"></i></button>
+    <div class="ctrls">
+      <button class="cbtn" id="breset"><i class="ti ti-player-skip-back"></i></button>
+      <button class="cbtn big" id="bplay"><i class="ti ti-player-play"></i></button>
+      <button class="cbtn" id="bskipbtn"><i class="ti ti-player-skip-forward"></i></button>
     </div>
   </div>
 
-  <!-- Stats -->
-  <div id="panelStats" style="display:none;">
-    <div class="stats-row">
-      <div class="stat-card"><div class="stat-val" id="statTotal">0h 0m</div><div class="stat-lbl">오늘 순공</div></div>
-      <div class="stat-card"><div class="stat-val" id="statSessions">0</div><div class="stat-lbl">완료 세션</div></div>
-      <div class="stat-card"><div class="stat-val" id="statStreak">0</div><div class="stat-lbl">오늘 연속</div></div>
+  <div id="pStats" style="display:none">
+    <div class="srow">
+      <div class="scard"><div class="sval" id="stTotal">0h 0m</div><div class="slb">오늘 순공</div></div>
+      <div class="scard"><div class="sval" id="stSess">0</div><div class="slb">완료 세션</div></div>
+      <div class="scard"><div class="sval" id="stStrk">0</div><div class="slb">오늘 연속</div></div>
     </div>
-    <div class="log-box">
-      <div class="log-title">오늘의 집중 기록</div>
-      <div class="log-list" id="logList">기록 없음</div>
+    <div class="logbox">
+      <div class="logtitle">오늘의 집중 기록</div>
+      <div class="loglist" id="loglist">기록 없음</div>
     </div>
-    <button class="clear-btn" id="btnClearLog">기록 초기화</button>
+    <button class="clrbtn" id="bclr">기록 초기화</button>
   </div>
 
-  <!-- Settings -->
-  <div id="panelSettings" style="display:none;">
-    <div class="settings-box">
-      <div class="setting-row">
-        <div class="setting-label">집중 시간</div>
-        <div class="num-ctrl">
-          <button class="num-btn" data-key="focus" data-dir="-1">−</button>
-          <div class="num-val" id="setFocus">25</div>
-          <button class="num-btn" data-key="focus" data-dir="1">+</button>
+  <div id="pSettings" style="display:none">
+    <div class="setbox">
+      <div class="setrow">
+        <div class="setlbl">집중 시간</div>
+        <div class="numctl">
+          <button class="nbtn" data-k="focus" data-d="-1">−</button>
+          <div class="nval" id="sFocus">25</div>
+          <button class="nbtn" data-k="focus" data-d="1">+</button>
           <span class="unit">분</span>
         </div>
       </div>
-      <div class="setting-row">
-        <div class="setting-label">짧은 휴식</div>
-        <div class="num-ctrl">
-          <button class="num-btn" data-key="short" data-dir="-1">−</button>
-          <div class="num-val" id="setShort">5</div>
-          <button class="num-btn" data-key="short" data-dir="1">+</button>
+      <div class="setrow">
+        <div class="setlbl">짧은 휴식</div>
+        <div class="numctl">
+          <button class="nbtn" data-k="short" data-d="-1">−</button>
+          <div class="nval" id="sShort">5</div>
+          <button class="nbtn" data-k="short" data-d="1">+</button>
           <span class="unit">분</span>
         </div>
       </div>
-      <div class="setting-row">
-        <div class="setting-label">긴 휴식</div>
-        <div class="num-ctrl">
-          <button class="num-btn" data-key="long" data-dir="-1">−</button>
-          <div class="num-val" id="setLong">15</div>
-          <button class="num-btn" data-key="long" data-dir="1">+</button>
+      <div class="setrow">
+        <div class="setlbl">긴 휴식</div>
+        <div class="numctl">
+          <button class="nbtn" data-k="long" data-d="-1">−</button>
+          <div class="nval" id="sLong">15</div>
+          <button class="nbtn" data-k="long" data-d="1">+</button>
           <span class="unit">분</span>
         </div>
       </div>
-      <div class="setting-row">
+      <div class="setrow">
         <div>
-          <div class="setting-label">세션 수</div>
-          <div class="setting-sub">긴 휴식 전 집중 횟수</div>
+          <div class="setlbl">세션 수</div>
+          <div class="setsub">긴 휴식 전 집중 횟수</div>
         </div>
-        <div class="num-ctrl">
-          <button class="num-btn" data-key="sessions" data-dir="-1">−</button>
-          <div class="num-val" id="setSessions">4</div>
-          <button class="num-btn" data-key="sessions" data-dir="1">+</button>
+        <div class="numctl">
+          <button class="nbtn" data-k="sessions" data-d="-1">−</button>
+          <div class="nval" id="sSess">4</div>
+          <button class="nbtn" data-k="sessions" data-d="1">+</button>
         </div>
       </div>
     </div>
   </div>
 
 </div>
-
 <script>
-/* ── Quotes ── */
-const quotes = [
-  { text: "지금 이 순간이 당신이 가진 전부입니다. 오늘 할 수 있는 일을 내일로 미루지 마세요.", author: "마르쿠스 아우렐리우스" },
-  { text: "천 리 길도 한 걸음부터.", author: "노자" },
-  { text: "성공은 매일 반복되는 작은 노력들의 합입니다.", author: "로버트 콜리어" },
-  { text: "당신이 할 수 있다고 생각하든, 없다고 생각하든 — 당신이 옳습니다.", author: "헨리 포드" },
-  { text: "오늘 힘들고 싫어도 해야 한다면, 내일은 더 쉬워집니다.", author: "아놀드 베넷" },
-  { text: "집중은 원하지 않는 것에 아니오라고 말하는 것입니다.", author: "스티브 잡스" },
-  { text: "우리가 두려워해야 할 것은 실패가 아니라 시작조차 하지 않는 것입니다.", author: "T.S. 엘리엇" },
-  { text: "재능은 연습 없이는 아무것도 아닙니다.", author: "볼프강 모차르트" },
-  { text: "불가능이란 말은 작은 사람들의 사전에나 있는 것입니다.", author: "나폴레옹 보나파르트" },
-  { text: "지식에 투자하면 항상 최고의 이자를 받습니다.", author: "벤자민 프랭클린" },
-  { text: "작은 진전이라도 매일 이루어진다면, 크고 대단한 일들이 일어납니다.", author: "새티야 나델라" },
-  { text: "교육은 삶을 준비하는 것이 아니라, 교육 자체가 삶입니다.", author: "존 듀이" },
+'use strict';
+
+/* ── 명언 ── */
+const QUOTES = [
+  {t:'지금 이 순간이 당신이 가진 전부입니다. 오늘 할 수 있는 일을 내일로 미루지 마세요.',a:'마르쿠스 아우렐리우스'},
+  {t:'천 리 길도 한 걸음부터.',a:'노자'},
+  {t:'성공은 매일 반복되는 작은 노력들의 합입니다.',a:'로버트 콜리어'},
+  {t:'당신이 할 수 있다고 생각하든, 없다고 생각하든 — 당신이 옳습니다.',a:'헨리 포드'},
+  {t:'오늘 힘들고 싫어도 해야 한다면, 내일은 더 쉬워집니다.',a:'아놀드 베넷'},
+  {t:'집중은 원하지 않는 것에 아니오라고 말하는 것입니다.',a:'스티브 잡스'},
+  {t:'우리가 두려워해야 할 것은 실패가 아니라 시작조차 하지 않는 것입니다.',a:'T.S. 엘리엇'},
+  {t:'재능은 연습 없이는 아무것도 아닙니다.',a:'볼프강 모차르트'},
+  {t:'불가능이란 말은 작은 사람들의 사전에나 있는 것입니다.',a:'나폴레옹 보나파르트'},
+  {t:'지식에 투자하면 항상 최고의 이자를 받습니다.',a:'벤자민 프랭클린'},
+  {t:'작은 진전이라도 매일 이루어진다면, 크고 대단한 일들이 일어납니다.',a:'새티야 나델라'},
+  {t:'교육은 삶을 준비하는 것이 아니라, 교육 자체가 삶입니다.',a:'존 듀이'},
 ];
-let qIdx = Math.floor(Math.random() * quotes.length);
-function showQuote() {
-  const q = quotes[qIdx % quotes.length];
-  document.getElementById('quoteText').textContent = q.text;
-  document.getElementById('quoteAuthor').textContent = '— ' + q.author;
+let qi = Math.floor(Math.random() * QUOTES.length);
+function showQ() {
+  const q = QUOTES[qi % QUOTES.length];
+  document.getElementById('qtext').textContent = q.t;
+  document.getElementById('qauthor').textContent = '— ' + q.a;
 }
-document.getElementById('quoteRefreshBtn').addEventListener('click', () => { qIdx = (qIdx+1)%quotes.length; showQuote(); });
-showQuote();
+document.getElementById('qrefresh').addEventListener('click', () => { qi++; showQ(); });
+showQ();
 
-/* ── Notification permission ── */
-let notifGranted = Notification.permission === 'granted';
-
-function initNotifBar() {
-  if (Notification.permission === 'granted') { notifGranted = true; return; }
+/* ── 알림 ── */
+let notifOK = Notification.permission === 'granted';
+(function initNotif() {
+  if (Notification.permission === 'granted') { notifOK = true; return; }
   if (Notification.permission === 'denied') return;
-  // Show the nudge bar
-  document.getElementById('notifBar').classList.add('show');
+  document.getElementById('nbar').classList.add('show');
+})();
+document.getElementById('nbarAllow').addEventListener('click', async () => {
+  const p = await Notification.requestPermission();
+  notifOK = p === 'granted';
+  document.getElementById('nbar').classList.remove('show');
+});
+document.getElementById('nbarX').addEventListener('click', () => {
+  document.getElementById('nbar').classList.remove('show');
+});
+function pushNotif(title, body) {
+  if (!notifOK) return;
+  try { new Notification(title, { body, tag:'pomo', renotify:true }); } catch(e) {}
 }
 
-document.getElementById('notifAllowBtn').addEventListener('click', async () => {
-  const perm = await Notification.requestPermission();
-  notifGranted = perm === 'granted';
-  document.getElementById('notifBar').classList.remove('show');
-});
-document.getElementById('notifDismissBtn').addEventListener('click', () => {
-  document.getElementById('notifBar').classList.remove('show');
-});
-
-function sendNotification(title, body, icon) {
-  if (!notifGranted) return;
+/* ── 사운드 ── */
+let actx = null;
+function beep(type) {
   try {
-    new Notification(title, {
-      body,
-      icon: icon || 'https://cdn.jsdelivr.net/npm/twemoji@14/2/svg/1f4da.svg',
-      badge: 'https://cdn.jsdelivr.net/npm/twemoji@14/2/svg/1f4da.svg',
-      tag: 'pomo-timer',          // replaces previous notification, no stack spam
-      renotify: true,
-      silent: false,
+    if (!actx) actx = new (window.AudioContext || window.webkitAudioContext)();
+    if (actx.state === 'suspended') actx.resume();
+    const ctx = actx;
+    const map = {
+      focus_done: [{f:880,t:0,d:.3},{f:1046,t:.35,d:.3},{f:1318,t:.7,d:.5}],
+      rest_done:  [{f:660,t:0,d:.25},{f:880,t:.3,d:.25}],
+      click:      [{f:1100,t:0,d:.07}],
+    };
+    (map[type] || map.click).forEach(({f,t,d}) => {
+      const o = ctx.createOscillator(), g = ctx.createGain();
+      o.connect(g); g.connect(ctx.destination);
+      o.type = type === 'click' ? 'triangle' : 'sine';
+      o.frequency.value = f;
+      const now = ctx.currentTime;
+      g.gain.setValueAtTime(0, now+t);
+      g.gain.linearRampToValueAtTime(type==='click'?.12:.35, now+t+.01);
+      g.gain.exponentialRampToValueAtTime(.001, now+t+d);
+      o.start(now+t); o.stop(now+t+d+.05);
     });
-  } catch(e) {}
+  } catch(e) { /* silent */ }
 }
 
-/* ── Config ── */
-const cfg = { focus: 25, short: 5, long: 15, sessions: 4 };
-const limits = { focus:[5,60], short:[1,30], long:[5,60], sessions:[2,8] };
+/* ── 설정 ── */
+const CFG = { focus:25, short:5, long:15, sessions:4 };
+const LIM = { focus:[5,60], short:[1,30], long:[5,60], sessions:[2,8] };
 
-/* ── State ── */
-let state = {
-  running: false, waiting: false, pendingMode: null,
-  mode: 'focus', session: 1,
-  secondsLeft: cfg.focus * 60,
-  endTime: null, rafId: null,
-  focusDone: 0, totalFocusSec: 0, logs: [], streak: 0,
-  focusStartedAt: null,   // wall-clock when current focus session began
+/* ── 상태 ── */
+const S = {
+  running:false, waiting:false, pendingMode:null,
+  mode:'focus', session:1,
+  secsLeft: 25*60,
+  endTime:null, raf:null, notifTid:null,
+  focusDone:0, totalSec:0, logs:[], streak:0,
+  focusStart:null, pauseAcc:0,
 };
+let hiddenAt = null;
 const CIRC = 2 * Math.PI * 92;
 
-/* ── Audio ── */
-let audioCtx = null;
-function getAudioCtx() {
-  if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-  return audioCtx;
-}
-function playAlarm(type) {
-  try {
-    // AudioContext must be resumed after a user gesture — safe to call here
-    // because playAlarm is always triggered from a button click or timer end.
-    if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-    if (audioCtx.state === 'suspended') audioCtx.resume();
-    const ctx = audioCtx;
-    const seqs = {
-      focus_done: [{f:880,t:0,d:0.3},{f:1046,t:0.35,d:0.3},{f:1318,t:0.7,d:0.5}],
-      rest_done:  [{f:660,t:0,d:0.25},{f:880,t:0.3,d:0.25}],
-      click:      [{f:1100,t:0,d:0.07}],
-    };
-    const seq = seqs[type] || seqs.click;
-    seq.forEach(({f,t,d}) => {
-      const osc = ctx.createOscillator(), gain = ctx.createGain();
-      osc.connect(gain); gain.connect(ctx.destination);
-      osc.type = type === 'click' ? 'triangle' : 'sine';
-      osc.frequency.setValueAtTime(f, ctx.currentTime + t);
-      gain.gain.setValueAtTime(0, ctx.currentTime + t);
-      gain.gain.linearRampToValueAtTime(type === 'click' ? 0.12 : 0.35, ctx.currentTime + t + 0.01);
-      gain.gain.exponentialRampToValueAtTime(0.001, ctx.currentTime + t + d);
-      osc.start(ctx.currentTime + t);
-      osc.stop(ctx.currentTime + t + d + 0.05);
-    });
-  } catch(e) { console.warn('playAlarm error:', e); }
-}
-
-/* ── Helpers ── */
+/* ── 디스플레이 ── */
 function fmt(s) {
-  const m = Math.floor(s/60), sec = s%60;
-  return String(m).padStart(2,'0')+':'+String(sec).padStart(2,'0');
+  s = Math.max(0, s|0);
+  return String(s/60|0).padStart(2,'0')+':'+String(s%60).padStart(2,'0');
 }
 function modeTotal(m) {
-  const mode = m||state.mode;
-  if (mode==='focus') return cfg.focus*60;
-  if (mode==='short') return cfg.short*60;
-  return cfg.long*60;
+  m = m || S.mode;
+  return (m==='focus'?CFG.focus:m==='short'?CFG.short:CFG.long)*60;
 }
-function updateRing() {
-  const frac = Math.max(0,state.secondsLeft)/modeTotal();
-  const ring = document.getElementById('progressRing');
-  ring.setAttribute('stroke-dashoffset', String(CIRC*(1-frac)));
-  ring.style.stroke = state.mode==='focus' ? 'var(--text-primary)' : 'var(--accent)';
-}
-function updateDots() {
-  const c = document.getElementById('sessionDots');
-  c.innerHTML = '';
-  for (let i=1; i<=cfg.sessions; i++) {
+function render() {
+  document.getElementById('tdisp').textContent = fmt(S.secsLeft);
+  const lmap = {focus:'집중',short:'짧은 휴식',long:'긴 휴식'};
+  document.getElementById('tlbl').textContent = lmap[S.mode];
+  document.getElementById('slbl').textContent = '세션 '+S.session+' / '+CFG.sessions;
+
+  const frac = Math.max(0, S.secsLeft) / modeTotal();
+  document.getElementById('ring').setAttribute('stroke-dashoffset', CIRC*(1-frac));
+  document.getElementById('ring').style.stroke = S.mode==='focus'?'var(--t1)':'var(--ac)';
+
+  const dc = document.getElementById('dots');
+  dc.innerHTML = '';
+  for (let i=1; i<=CFG.sessions; i++) {
     const d = document.createElement('div');
-    d.className = 'dot'+(i<state.session?' done':'');
-    c.appendChild(d);
+    d.className = 'dot' + (i < S.session ? ' on' : '');
+    dc.appendChild(d);
   }
+
+  const bp = document.getElementById('bplay');
+  bp.innerHTML = S.running
+    ? '<i class="ti ti-player-pause"></i>'
+    : '<i class="ti ti-player-play"></i>';
+  bp.disabled = S.waiting;
 }
-function updateDisplay() {
-  document.getElementById('timerDisplay').textContent = fmt(Math.max(0,state.secondsLeft));
-  const labels = {focus:'집중', short:'짧은 휴식', long:'긴 휴식'};
-  document.getElementById('timerLabel').textContent = labels[state.mode];
-  document.getElementById('sessionLabel').textContent = '세션 '+state.session+' / '+cfg.sessions;
-  updateRing(); updateDots();
-  const btnPlay = document.getElementById('btnPlay');
-  btnPlay.innerHTML = state.running ? '<i class="ti ti-player-pause"></i>' : '<i class="ti ti-player-play"></i>';
-  btnPlay.disabled = state.waiting;
+function renderStats() {
+  const h = S.totalSec/3600|0, m = (S.totalSec%3600)/60|0;
+  document.getElementById('stTotal').textContent = h+'h '+m+'m';
+  document.getElementById('stSess').textContent = S.focusDone;
+  document.getElementById('stStrk').textContent = S.streak;
+  document.getElementById('loglist').innerHTML = S.logs.length
+    ? S.logs.slice().reverse().slice(0,10).map(l=>'<div>'+l+'</div>').join('')
+    : '기록 없음';
 }
 
-/* ── Background-safe timer ── */
-function startTicking() {
-  if (state.rafId) cancelAnimationFrame(state.rafId);
-  state.endTime = Date.now() + state.secondsLeft * 1000;
-  scheduleNotifTimeout();
+/* ── 타이머 엔진 ── */
+function startTick() {
+  if (S.raf) cancelAnimationFrame(S.raf);
+  S.endTime = Date.now() + S.secsLeft*1000;
+  // 절대 시각 기반 알림 예약
+  clearTimeout(S.notifTid);
+  S.notifTid = setTimeout(() => {
+    if (S.running) { S.running=false; S.secsLeft=0; stopTick(); onDone(); }
+  }, S.secsLeft*1000 + 400);
+
   function tick() {
-    if (!state.running) return;
-    const remaining = Math.round((state.endTime - Date.now()) / 1000);
-    state.secondsLeft = Math.max(0, remaining);
-    updateDisplay();
-    if (state.secondsLeft <= 0) { stopTicking(); onTimerDone(); }
-    else state.rafId = requestAnimationFrame(tick);
+    if (!S.running) return;
+    S.secsLeft = Math.max(0, Math.round((S.endTime-Date.now())/1000));
+    render();
+    if (S.secsLeft <= 0) { stopTick(); onDone(); }
+    else S.raf = requestAnimationFrame(tick);
   }
-  state.rafId = requestAnimationFrame(tick);
+  S.raf = requestAnimationFrame(tick);
 }
-function stopTicking() {
-  if (state.rafId) { cancelAnimationFrame(state.rafId); state.rafId = null; }
-  clearNotifTimeout();
-}
-
-// setTimeout-based notification fallback (fires even if tab is backgrounded on desktop)
-let notifTimeoutId = null;
-function scheduleNotifTimeout() {
-  clearNotifTimeout();
-  const msLeft = state.endTime - Date.now();
-  if (msLeft < 0) return;
-  notifTimeoutId = setTimeout(() => {
-    // If the RAF loop already fired onTimerDone this will be a no-op because
-    // we clear this id inside stopTicking which is called before onTimerDone.
-    // But on mobile where RAF is throttled, this setTimeout fires first.
-    if (state.running) {
-      state.running = false;
-      state.secondsLeft = 0;
-      stopTicking();
-      onTimerDone();
-    }
-  }, msLeft + 300); // +300ms grace
-}
-function clearNotifTimeout() {
-  if (notifTimeoutId) { clearTimeout(notifTimeoutId); notifTimeoutId = null; }
+function stopTick() {
+  if (S.raf) { cancelAnimationFrame(S.raf); S.raf=null; }
+  clearTimeout(S.notifTid); S.notifTid=null;
 }
 
-/* ── Page visibility sync ── */
-// When tab hides: pause the endTime (so hidden time is NOT counted as study time).
-// When tab shows: shift endTime forward by the hidden duration, then resume.
-let hiddenAt = null;
-
+/* ── 탭 숨김/표시 ── */
 document.addEventListener('visibilitychange', () => {
+  if (!S.running) return;
   if (document.visibilityState === 'hidden') {
-    // Tab going away — record when
-    if (state.running) {
-      hiddenAt = Date.now();
-      // Cancel RAF (it'll be throttled anyway); setTimeout alarm still lives
-      if (state.rafId) { cancelAnimationFrame(state.rafId); state.rafId = null; }
-    }
+    hiddenAt = Date.now();
+    if (S.raf) { cancelAnimationFrame(S.raf); S.raf=null; }
   } else {
-    // Tab coming back
-    if (state.running && hiddenAt !== null) {
-      const hiddenMs = Date.now() - hiddenAt;
+    if (hiddenAt !== null) {
+      const gap = Date.now() - hiddenAt;
       hiddenAt = null;
-      // Shift endTime forward → hidden time excluded from countdown
-      state.endTime += hiddenMs;
-      // Also push the scheduled notification timeout forward
-      clearNotifTimeout();
-      scheduleNotifTimeout();
-      // Check if timer would have naturally ended while hidden
-      const remaining = Math.round((state.endTime - Date.now()) / 1000);
-      if (remaining <= 0) {
-        state.secondsLeft = 0; stopTicking(); onTimerDone();
-      } else {
-        state.secondsLeft = remaining; startTicking();
+      S.endTime += gap; // 숨긴 시간만큼 endTime 뒤로 밀어서 순공에서 제외
+      clearTimeout(S.notifTid);
+      const rem = Math.round((S.endTime-Date.now())/1000);
+      if (rem <= 0) { S.secsLeft=0; S.running=false; stopTick(); onDone(); return; }
+      S.secsLeft = rem;
+      // setTimeout 재예약
+      S.notifTid = setTimeout(() => {
+        if (S.running) { S.running=false; S.secsLeft=0; stopTick(); onDone(); }
+      }, rem*1000 + 400);
+      // RAF 재시작
+      function tick() {
+        if (!S.running) return;
+        S.secsLeft = Math.max(0, Math.round((S.endTime-Date.now())/1000));
+        render();
+        if (S.secsLeft <= 0) { stopTick(); onDone(); }
+        else S.raf = requestAnimationFrame(tick);
       }
+      S.raf = requestAnimationFrame(tick);
     }
-    hiddenAt = null;
   }
 });
 
-/* ── Phase logic ── */
-function onTimerDone() {
-  state.running = false;
-  if (state.mode === 'focus') {
-    // Actual seconds spent focusing (excludes hidden/backgrounded time)
-    const elapsed = state.focusStartedAt
-      ? Math.round((Date.now() - state.focusStartedAt) / 1000)
-      : 0;
-    const actualSec = (state._focusElapsedBeforePause || 0) + elapsed;
-    state._focusElapsedBeforePause = 0;
-    state.focusDone++;
-    state.totalFocusSec += actualSec;
-    state.streak++;
-    state.focusStartedAt = null;  // reset for next session
+/* ── 세션 완료 ── */
+function onDone() {
+  S.running = false;
+  if (S.mode === 'focus') {
+    // 실제 순공 시간 계산
+    const elapsed = S.focusStart ? Math.round((Date.now()-S.focusStart)/1000) : CFG.focus*60;
+    const actual = Math.min(S.pauseAcc + elapsed, CFG.focus*60);
+    S.totalSec += actual;
+    S.focusDone++;
+    S.streak++;
+    S.focusStart = null; S.pauseAcc = 0;
     const now = new Date();
-    const time = now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
-    const mins = Math.floor(actualSec/60);
-    state.logs.push(time+' — 집중 '+mins+'분 완료');
-    updateStats();
-    const nextMode = (state.focusDone % cfg.sessions === 0) ? 'long' : 'short';
-    const restMins = nextMode === 'long' ? cfg.long : cfg.short;
-    playAlarm('focus_done');
-    // Push notification — shows even if tab is backgrounded
-    sendNotification(
-      '🎉 집중 완료! ' + cfg.focus + '분',
-      restMins + '분 휴식할 시간이에요. 앱으로 돌아와서 휴식을 시작하세요.',
-    );
-    showBanner('focus_done', nextMode);
+    const ts = now.getHours()+':'+String(now.getMinutes()).padStart(2,'0');
+    S.logs.push(ts+' — 집중 '+(actual/60|0)+'분 완료');
+    renderStats();
+
+    const next = (S.focusDone % CFG.sessions === 0) ? 'long' : 'short';
+    const mins = next==='long'?CFG.long:CFG.short;
+    beep('focus_done');
+    pushNotif('🎉 집중 완료! '+CFG.focus+'분', mins+'분 휴식 시간이에요. 앱으로 돌아오세요.');
+    showBanner('focus_done', next);
   } else {
-    playAlarm('rest_done');
-    sendNotification(
-      '☕ 휴식 끝!',
-      '다시 집중할 시간이에요. 파이팅! 💪',
-    );
+    beep('rest_done');
+    pushNotif('☕ 휴식 끝!', '다시 집중할 시간이에요. 파이팅! 💪');
     showBanner('rest_done', 'focus');
   }
-  updateDisplay();
+  render();
 }
 
-function showBanner(type, nextMode) {
-  state.waiting = true; state.pendingMode = nextMode;
-  const title = document.getElementById('bannerTitle');
-  const sub = document.getElementById('bannerSub');
-  const startBtn = document.getElementById('bannerStartBtn');
+/* ── 배너 ── */
+function showBanner(type, next) {
+  S.waiting = true; S.pendingMode = next;
+  const mins = next==='long'?CFG.long:next==='short'?CFG.short:CFG.focus;
   if (type === 'focus_done') {
-    const mins = nextMode === 'long' ? cfg.long : cfg.short;
-    title.textContent = '🎉 집중 완료!';
-    sub.textContent = '수고했어요! 준비되면 '+mins+'분 휴식을 시작하세요.';
-    startBtn.textContent = '휴식 시작 '+mins+'분';
+    document.getElementById('btitle').textContent = '🎉 집중 완료!';
+    document.getElementById('bsub').textContent = '수고했어요! 준비되면 '+mins+'분 휴식을 시작하세요.';
+    document.getElementById('bstart').textContent = '휴식 시작 '+mins+'분';
   } else {
-    title.textContent = '☕ 휴식 끝!';
-    sub.textContent = '다시 집중할 준비가 됐나요?';
-    startBtn.textContent = '집중 시작 '+cfg.focus+'분';
+    document.getElementById('btitle').textContent = '☕ 휴식 끝!';
+    document.getElementById('bsub').textContent = '다시 집중할 준비가 됐나요?';
+    document.getElementById('bstart').textContent = '집중 시작 '+CFG.focus+'분';
   }
-  document.getElementById('phaseBanner').classList.add('visible');
-  updateDisplay();
+  document.getElementById('banner').classList.add('show');
+  render();
 }
 function hideBanner() {
-  document.getElementById('phaseBanner').classList.remove('visible');
-  state.waiting = false;
+  document.getElementById('banner').classList.remove('show');
+  S.waiting = false;
 }
-function commitNextPhase() {
+function goNext(autoStart) {
   hideBanner();
-  const next = state.pendingMode;
+  const next = S.pendingMode;
   if (next !== 'focus') {
-    state.session = (state.focusDone % cfg.sessions === 0) ? 1 : Math.min(state.session+1, cfg.sessions);
+    S.session = (S.focusDone % CFG.sessions === 0) ? 1 : Math.min(S.session+1, CFG.sessions);
   }
-  state.mode = next;
-  state.secondsLeft = modeTotal(next);
-  state.focusStartedAt = (next === 'focus') ? Date.now() : null;
-  state._focusElapsedBeforePause = 0;
-  state.running = true;
-  startTicking();
+  S.mode = next;
+  S.secsLeft = modeTotal(next);
+  S.focusStart = null; S.pauseAcc = 0;
+  if (autoStart) {
+    if (next === 'focus') S.focusStart = Date.now();
+    S.running = true;
+    startTick();
+  }
+  render();
 }
 
-document.getElementById('bannerStartBtn').addEventListener('click', () => {
-  playAlarm('click');
-  commitNextPhase();
+/* ── 버튼들 ── */
+document.getElementById('bstart').addEventListener('click', () => {
+  beep('click'); goNext(true);
 });
-document.getElementById('bannerSkipBtn').addEventListener('click', () => {
-  playAlarm('click');
-  hideBanner();
-  const next = state.pendingMode;
-  if (next !== 'focus') state.session = (state.focusDone % cfg.sessions === 0) ? 1 : Math.min(state.session+1, cfg.sessions);
-  state.mode = next;
-  state.secondsLeft = modeTotal(next);
-  updateDisplay();
+document.getElementById('bskip').addEventListener('click', () => {
+  beep('click'); goNext(false);
 });
-
-/* ── Controls ── */
-document.getElementById('btnPlay').addEventListener('click', () => {
-  if (state.waiting) return;
-  playAlarm('click');
-  if (state.running) {
-    state.running = false;
-    stopTicking();
-    // When paused: record how much focus time was accumulated so far
-    // by shifting focusStartedAt forward by pause duration (handled on resume)
-    if (state.mode === 'focus' && state.focusStartedAt !== null) {
-      // Snap: store net elapsed so far, reset start for when resumed
-      const elapsed = Math.round((Date.now() - state.focusStartedAt) / 1000);
-      state._focusElapsedBeforePause = (state._focusElapsedBeforePause || 0) + elapsed;
-      state.focusStartedAt = null;
+document.getElementById('bplay').addEventListener('click', () => {
+  if (S.waiting) return;
+  beep('click');
+  if (S.running) {
+    // 일시정지
+    S.running = false; stopTick();
+    if (S.mode==='focus' && S.focusStart) {
+      S.pauseAcc += Math.round((Date.now()-S.focusStart)/1000);
+      S.focusStart = null;
     }
   } else {
-    state.running = true;
-    // Resume: restart focusStartedAt fresh (accumulated in _focusElapsedBeforePause)
-    if (state.mode === 'focus') state.focusStartedAt = Date.now();
-    startTicking();
+    // 재생
+    S.running = true;
+    if (S.mode==='focus') S.focusStart = Date.now();
+    startTick();
   }
-  updateDisplay();
+  render();
 });
-document.getElementById('btnReset').addEventListener('click', () => {
-  playAlarm('click');
-  state.running = false; state.waiting = false;
-  stopTicking(); hideBanner();
-  state.mode = 'focus'; state.session = 1;
-  state.secondsLeft = cfg.focus * 60;
-  state.focusStartedAt = null;
-  state._focusElapsedBeforePause = 0;
-  hiddenAt = null;
-  updateDisplay();
+document.getElementById('breset').addEventListener('click', () => {
+  beep('click');
+  S.running=false; S.waiting=false;
+  stopTick(); hideBanner();
+  S.mode='focus'; S.session=1; S.secsLeft=CFG.focus*60;
+  S.focusStart=null; S.pauseAcc=0; hiddenAt=null;
+  render();
 });
-document.getElementById('btnSkip').addEventListener('click', () => {
-  playAlarm('click');
-  if (state.waiting) { commitNextPhase(); return; }
-  state.running = false; stopTicking(); onTimerDone();
+document.getElementById('bskipbtn').addEventListener('click', () => {
+  beep('click');
+  if (S.waiting) { goNext(true); return; }
+  S.running=false; stopTick(); onDone();
 });
 
-/* ── Stats ── */
-function updateStats() {
-  const h = Math.floor(state.totalFocusSec/3600);
-  const m = Math.floor((state.totalFocusSec%3600)/60);
-  document.getElementById('statTotal').textContent = h+'h '+m+'m';
-  document.getElementById('statSessions').textContent = state.focusDone;
-  document.getElementById('statStreak').textContent = state.streak;
-  const el = document.getElementById('logList');
-  if (el) {
-    el.innerHTML = state.logs.length
-      ? state.logs.slice().reverse().slice(0,10).map(l=>'<div>'+l+'</div>').join('')
-      : '기록 없음';
-  }
-}
-document.getElementById('btnClearLog').addEventListener('click', () => {
-  state.logs=[]; state.totalFocusSec=0; state.focusDone=0; state.streak=0;
-  updateStats();
-});
-
-/* ── Tabs ── */
-document.querySelectorAll('.mode-tab').forEach(tab => {
+/* ── 탭 전환 ── */
+document.querySelectorAll('.tab').forEach(tab => {
   tab.addEventListener('click', () => {
-    document.querySelectorAll('.mode-tab').forEach(t=>t.classList.remove('active'));
-    tab.classList.add('active');
-    ['timer','stats','settings'].forEach(k => {
-      document.getElementById('panel'+k.charAt(0).toUpperCase()+k.slice(1)).style.display = tab.dataset.tab===k?'':'none';
+    document.querySelectorAll('.tab').forEach(t => t.classList.remove('on'));
+    tab.classList.add('on');
+    const map = {timer:'pTimer', stats:'pStats', settings:'pSettings'};
+    Object.entries(map).forEach(([k,id]) => {
+      document.getElementById(id).style.display = tab.dataset.tab===k ? '' : 'none';
     });
-    if (tab.dataset.tab==='stats') updateStats();
+    if (tab.dataset.tab==='stats') renderStats();
   });
 });
 
-/* ── Settings ── */
-document.querySelectorAll('.num-btn').forEach(btn => {
+/* ── 설정 버튼 ── */
+document.querySelectorAll('.nbtn').forEach(btn => {
   btn.addEventListener('click', () => {
-    const key=btn.dataset.key, dir=parseInt(btn.dataset.dir);
-    const [mn,mx]=limits[key];
-    cfg[key]=Math.min(mx,Math.max(mn,cfg[key]+dir));
-    const ids={focus:'setFocus',short:'setShort',long:'setLong',sessions:'setSessions'};
-    document.getElementById(ids[key]).textContent=cfg[key];
-    if (!state.running) { state.secondsLeft=modeTotal(); updateDisplay(); }
+    beep('click');
+    const k = btn.dataset.k, d = +btn.dataset.d;
+    const [mn,mx] = LIM[k];
+    CFG[k] = Math.min(mx, Math.max(mn, CFG[k]+d));
+    const ids = {focus:'sFocus',short:'sShort',long:'sLong',sessions:'sSess'};
+    document.getElementById(ids[k]).textContent = CFG[k];
+    if (!S.running) { S.secsLeft=modeTotal(); render(); }
   });
 });
 
-/* ── Init ── */
-updateDisplay();
-updateStats();
-initNotifBar();
+/* ── 기록 초기화 ── */
+document.getElementById('bclr').addEventListener('click', () => {
+  beep('click');
+  S.logs=[]; S.totalSec=0; S.focusDone=0; S.streak=0;
+  renderStats();
+});
+
+/* ── 초기화 ── */
+render();
+renderStats();
 </script>
 </body>
 </html>
