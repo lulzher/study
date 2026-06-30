@@ -214,6 +214,9 @@ body{font-family:-apple-system,BlinkMacSystemFont,'SF Pro Text','Segoe UI',sans-
 </div>
 <script>
 'use strict';
+window.addEventListener('error', function(e) {
+  console.error('Timer script error:', e.message, e.filename, e.lineno);
+});
 
 /* ── 명언 ── */
 const QUOTES = [
@@ -239,23 +242,37 @@ function showQ() {
 document.getElementById('qrefresh').addEventListener('click', () => { qi++; showQ(); });
 showQ();
 
-/* ── 알림 ── */
-let notifOK = Notification.permission === 'granted';
+/* ── 알림 (Notification API 미지원 환경에서도 절대 죽지 않도록 전부 가드) ── */
+const NOTIF_SUPPORTED = (typeof window !== 'undefined' && 'Notification' in window);
+let notifOK = NOTIF_SUPPORTED && Notification.permission === 'granted';
+
 (function initNotif() {
+  if (!NOTIF_SUPPORTED) return; // 인앱 브라우저 등 미지원 환경 — 알림바 숨김, 나머지 정상 동작
   if (Notification.permission === 'granted') { notifOK = true; return; }
   if (Notification.permission === 'denied') return;
-  document.getElementById('nbar').classList.add('show');
+  const bar = document.getElementById('nbar');
+  if (bar) bar.classList.add('show');
 })();
-document.getElementById('nbarAllow').addEventListener('click', async () => {
-  const p = await Notification.requestPermission();
-  notifOK = p === 'granted';
-  document.getElementById('nbar').classList.remove('show');
-});
-document.getElementById('nbarX').addEventListener('click', () => {
-  document.getElementById('nbar').classList.remove('show');
-});
+
+const nbarAllowEl = document.getElementById('nbarAllow');
+if (nbarAllowEl) {
+  nbarAllowEl.addEventListener('click', async () => {
+    if (!NOTIF_SUPPORTED) { document.getElementById('nbar').classList.remove('show'); return; }
+    try {
+      const p = await Notification.requestPermission();
+      notifOK = p === 'granted';
+    } catch(e) {}
+    document.getElementById('nbar').classList.remove('show');
+  });
+}
+const nbarXEl = document.getElementById('nbarX');
+if (nbarXEl) {
+  nbarXEl.addEventListener('click', () => {
+    document.getElementById('nbar').classList.remove('show');
+  });
+}
 function pushNotif(title, body) {
-  if (!notifOK) return;
+  if (!NOTIF_SUPPORTED || !notifOK) return;
   try { new Notification(title, { body, tag:'pomo', renotify:true }); } catch(e) {}
 }
 
